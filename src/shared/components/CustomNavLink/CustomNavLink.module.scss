@@ -1,0 +1,15 @@
+@import 'src/utilities/__variables.scss';
+$fontSize: 1.4em;
+
+.link {
+  display: flex;
+  font-size: $fontSize;
+  justify-content: space-between;
+}
+
+.activeLinkIndicator {
+  background: $primary;
+  height: 2px;
+  height: 100%;
+  width: 2px;
+}

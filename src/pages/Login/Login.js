@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
-import queryString from "query-string";
-import { useLocation, useHistory } from "react-router-dom";
-import { Button, Form } from "react-bootstrap";
-import AuthContainer from "shared/components/AuthContainer/AuthContainer";
+import React from "react";
+import { useHistory } from "react-router-dom";
+import { Button, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
+import AuthContainer from "pages/Login/AuthContainer/AuthContainer";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axiosService from "services/api.service";
+import { useDispatch, useSelector } from "react-redux";
+import { GoogleAuth } from "pages/Login/GoogleAuth/GoogleAuth";
+import { signInWithGoogle, signInWithCredentials } from "store/actions/auth";
+import { TwitterAuth } from "./TwitterAuth/TwitterAuth";
+import { FacebookAuth } from "./FacebookAuth/FacebookAuth";
 
 const requiredError = "This is a required field";
 
@@ -19,37 +23,13 @@ const validationSchema = Yup.object({
 const service = axiosService();
 
 const Login = () => {
-  const [googleSignUrl, setGoogleSignUrl] = useState(null);
-  const { search } = useLocation();
+  const { token, error, isLoading } = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
   const history = useHistory();
 
-  useEffect(() => {
-    const getUrl = async () => {
-      const { data } = await service.get("auth/google-signin-url");
-      setGoogleSignUrl(data.googleLoginUrl);
-    };
-    getUrl();
-  }, []);
-
-  const signIn = credentials => {
-    service.post("auth/signin", credentials);
+  const handleGoogleSignin = code => {
+    dispatch(signInWithGoogle({ code, redirect: history.push }));
   };
-
-  useEffect(() => {
-    const sendCode = async code => {
-      try {
-        await service.post("auth/google-signin", { code });
-        console.log("history", history);
-        history.push("/posts");
-      } catch (error) {
-        console.log("ERROR LOGGING IN");
-      }
-    };
-    if (search.length) {
-      const { code } = queryString.parse(search);
-      sendCode(code);
-    }
-  }, [search]);
 
   const formik = useFormik({
     initialValues: {
@@ -57,59 +37,60 @@ const Login = () => {
       password: "",
     },
     isInitialValid: false,
-    onSubmit: userCredentials => {
-      signIn(userCredentials);
+    onSubmit: credentials => {
+      dispatch(signInWithCredentials({ credentials, redirect: history.push }));
     },
     validationSchema,
   });
 
   return (
     <AuthContainer>
-      {search.length ? (
-        <p>Signing you in...</p>
-      ) : (
-        <Form onSubmit={formik.handleSubmit}>
-          <Form.Group controlId="email">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              name="email"
-              type="email"
-              placeholder="Enter email"
-              {...formik.getFieldProps("email")}
-              isInvalid={formik.touched.email && formik.errors.email}
-            />
-          </Form.Group>
-          <Form.Group controlId="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              name="password"
-              type="password"
-              placeholder="Password"
-              {...formik.getFieldProps("password")}
-              isInvalid={formik.touched.password && formik.errors.password}
-            />
-          </Form.Group>
-          <Form.Group controlId="keepSignedIn">
-            <Form.Check type="checkbox" label="Keep me signed in" />
-          </Form.Group>
-          <Button variant="outline-light" type="submit" block>
-            Login
-          </Button>
-          <Button
-            variant="outline-light"
-            type="button"
-            block
-            disabled={!googleSignUrl}
-            as="a"
-            href={googleSignUrl}
-          >
-            Login with {""}
-            <span className="text-primary">
-              <i className="fab fa-google"></i>
-            </span>
-          </Button>
-        </Form>
-      )}
+      <Form onSubmit={formik.handleSubmit}>
+        <Form.Group controlId="email">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            name="email"
+            type="email"
+            placeholder="Enter email"
+            {...formik.getFieldProps("email")}
+            isInvalid={formik.touched.email && formik.errors.email}
+          />
+        </Form.Group>
+        <Form.Group controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            name="password"
+            type="password"
+            placeholder="Password"
+            {...formik.getFieldProps("password")}
+            isInvalid={formik.touched.password && formik.errors.password}
+          />
+        </Form.Group>
+        <Form.Group controlId="keepSignedIn">
+          <Form.Check type="checkbox" label="Keep me signed in" />
+        </Form.Group>
+        <Button variant="outline-light" type="submit" block>
+          Login
+        </Button>
+        <p className="text-center">or</p>
+        <OverlayTrigger
+          placement="bottom"
+          delay={{ show: 300, hide: 400 }}
+          overlay={
+            <Tooltip>
+              Don't want to fill the forms? Just use your google account
+            </Tooltip>
+          }
+        >
+          <div>
+            <GoogleAuth onSignInSuccess={handleGoogleSignin} />
+          </div>
+        </OverlayTrigger>
+
+        {/* <TwitterAuth />
+        <FacebookAuth /> */}
+      </Form>
+      {error && <p className="text-danger">{error}</p>}
     </AuthContainer>
   );
 };

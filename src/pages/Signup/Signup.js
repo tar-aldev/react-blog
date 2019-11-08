@@ -1,9 +1,15 @@
 import React from "react";
-import { Form, Button } from "react-bootstrap";
-import AuthContainer from "shared/components/AuthContainer/AuthContainer";
+import { Form, Button, OverlayTrigger, Tooltip, Nav } from "react-bootstrap";
+import AuthContainer from "pages/Login/AuthContainer/AuthContainer";
 import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
+import { NavLink as RouterNavLink, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import axiosService from "services/api.service";
+import { signUp } from "store/actions/auth";
+import { GoogleAuth } from "pages/Login/GoogleAuth/GoogleAuth";
+import CustomNavLink from "shared/components/CustomNavLink/CustomNavLink";
+import NavLink from "react-bootstrap/NavLink";
 
 const requiredError = "This is a required field";
 // stri.required("This is a required field"),
@@ -23,11 +29,9 @@ const validationSchema = Yup.object({
     .required(requiredError),
 });
 
-const service = axiosService();
 const Signup = () => {
-  const signUp = userCredentials => {
-    service.post(`users`, userCredentials);
-  };
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
@@ -38,7 +42,9 @@ const Signup = () => {
     },
     isInitialValid: false,
     onSubmit: userCredentials => {
-      signUp(userCredentials);
+      dispatch(
+        signUp({ credentials: userCredentials, redirect: history.push })
+      );
     },
     validationSchema,
   });
@@ -123,6 +129,10 @@ const Signup = () => {
         >
           Signup
         </Button>
+        <p className="text-center">or</p>
+        <NavLink as={RouterNavLink} to="/login" className="text-center">
+          Use social account
+        </NavLink>
       </Form>
     </AuthContainer>
   );

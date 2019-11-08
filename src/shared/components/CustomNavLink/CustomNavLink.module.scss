@@ -1,9 +1,11 @@
 @import 'src/utilities/__variables.scss';
-$fontSize: 1.4em;
 
 .link {
   display: flex;
-  font-size: $fontSize;
+  align-items: center;
+  width: 100%;
+  border-right: 2px solid transparent;
+  font-size: $navBarFontSize;
   justify-content: space-between;
 }
 
@@ -12,4 +14,10 @@ $fontSize: 1.4em;
   height: 2px;
   height: 100%;
   width: 2px;
+}
+
+.active {
+  display: flex;
+  width: 100%;
+  border-right: 2px solid $primary;
 }

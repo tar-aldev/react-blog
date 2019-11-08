@@ -1,34 +1,65 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import CustomNavLink from "shared/components/CustomNavLink/CustomNavLink";
 import { useTrail, animated } from "react-spring";
-import { Nav } from "react-bootstrap";
+import { Nav, Button } from "react-bootstrap";
 import clsx from "clsx";
 import classes from "./Navbar.module.scss";
+import CustomButton from "shared/components/CustomButton/CustomButton";
+import CustomNavIcon from "shared/components/CustomNavIcon/CustomNavIcon";
 
-const topLinks = [
-  { link: "/posts", label: "Posts" },
+const topLinksInitial = [
+  { to: "/posts", label: "Posts" },
   /* { link: "/users", label: "Users" }, */
 ];
 
-const bottomLinks = [
-  { link: "/login", label: "Login" },
-  { link: "/signup", label: "Signup" },
+const bottomLinksInitial = [
+  { to: "/login", label: "Login" },
+  { to: "/signup", label: "Signup" },
 ];
 
 const Navbar = () => {
+  const [topLinks, setTopLinks] = useState(topLinksInitial);
+  const [bottomLinks, setBottomLinks] = useState(bottomLinksInitial);
+  const { token } = useSelector(state => state.authReducer);
+
+  useEffect(() => {
+    console.log("token", token);
+    if (token) {
+      setBottomLinks([{ button: true, label: "Signout" }]);
+    }
+  }, [token]);
+
+  const handleClick = menuLabel => {
+    if (menuLabel === "Signout") {
+      console.log("SIGN OUT");
+    }
+  };
+
+  console.log("NAVBAR RERENDER");
   return (
     <Nav
       defaultActiveKey="/home"
       className={clsx(["flex-column", classes.root])}
     >
-      <LinkGroup links={topLinks} />
+      <CustomNavLink to="/posts">Posts</CustomNavLink>
+      <CustomNavLink to="/my-posts">My posts</CustomNavLink>
+      <CustomNavLink to="/add-post">
+        Add post <i className="fas fa-plus"></i>
+      </CustomNavLink>
       <div className={classes.divider} />
-      <LinkGroup links={bottomLinks} />
+
+      <CustomNavLink to="/login" className="mb-2">
+        <i className="fas fa-sign-in-alt"></i>
+      </CustomNavLink>
+      <CustomNavLink to="/signup">
+        <i className="fas fa-user-plus"></i>
+      </CustomNavLink>
     </Nav>
   );
 };
 
-const LinkGroup = ({ links }) => {
+const LinkGroup = ({ links, handleClick }) => {
   const trail = useTrail(links.length, {
     from: { opacity: 0 },
     to: { opacity: 1 },
@@ -37,14 +68,28 @@ const LinkGroup = ({ links }) => {
     },
   });
 
-  const AnimatedNavLink = animated(CustomNavLink);
-
   return trail.map((animationProps, index) => {
-    const { label, link } = links[index];
+    const { label, to, button } = links[index];
+
+    if (button) {
+      return (
+        <CustomButton
+          variant="outline-primary"
+          key={index}
+          href="/"
+          onClick={e => {
+            e.preventDefault();
+            handleClick(label);
+          }}
+        >
+          Signout
+        </CustomButton>
+      );
+    }
     return (
-      <AnimatedNavLink style={animationProps} key={index} to={link}>
+      <CustomNavLink style={animationProps} key={index} to={to}>
         {label}
-      </AnimatedNavLink>
+      </CustomNavLink>
     );
   });
 };

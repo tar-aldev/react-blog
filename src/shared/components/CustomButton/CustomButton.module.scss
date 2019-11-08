@@ -1,0 +1,12 @@
+@import 'src/utilities/__variables.scss';
+
+.root {
+  font-size: $navBarFontSize;
+  border: none;
+
+  &:hover {
+    color: #9a4912 !important;
+    border: none !important;
+    background: transparent !important;
+  }
+}

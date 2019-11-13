@@ -2,7 +2,7 @@
 
 .editor {
   height: 100%;
-  font-size: 14px;
+  font-size: 16px;
   /* border: 1px solid $info; */
   color: $white;
 }
@@ -26,4 +26,16 @@
 .codeBlock {
   background: $muted;
   color: $black;
+}
+
+.textLeft div {
+  text-align: left;
+}
+
+.textCenter div {
+  text-align: center;
+}
+
+.textLeft div {
+  text-align: right;
 }

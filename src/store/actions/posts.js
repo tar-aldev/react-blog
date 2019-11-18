@@ -6,6 +6,10 @@ export const GET_POST_ASYNC = "[Posts] Get Post async";
 export const GET_POST_SUCCESS = "[Posts] Get Post success";
 export const GET_POST_ERROR = "[Posts] Get Post error";
 
+export const ADD_POST_ASYNC = "[Posts] Add Post async";
+export const ADD_POST_SUCCESS = "[Posts] Add Post async success";
+export const ADD_POST_ERROR = "[Posts] Add Post async error";
+
 export const getPosts = () => {
   return {
     type: GET_POSTS_ASYNC,
@@ -34,6 +38,7 @@ export const getPost = id => {
 };
 
 export const getPostSuccess = payload => {
+  console.log("get post success", payload);
   return {
     type: GET_POST_SUCCESS,
     payload,
@@ -43,6 +48,27 @@ export const getPostSuccess = payload => {
 export const getPostError = payload => {
   return {
     type: GET_POST_ERROR,
+    payload,
+  };
+};
+
+export const addPost = payload => {
+  return {
+    type: ADD_POST_ASYNC,
+    payload,
+  };
+};
+
+export const addPostSuccess = payload => {
+  return {
+    type: ADD_POST_SUCCESS,
+    payload,
+  };
+};
+
+export const addPostError = payload => {
+  return {
+    type: ADD_POST_ERROR,
     payload,
   };
 };

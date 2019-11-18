@@ -9,6 +9,8 @@ import { getPostComments } from "store/actions/comments";
 import { Comment } from "shared/components/Comment/Comment";
 import { AddComment } from "shared/components/AddComment/AddComment";
 import { BadgesList } from "shared/components/BadgesList/BadgesList";
+import { Editor } from "slate-react";
+import plugins from "pages/AddPost/plugins";
 
 export const Post = () => {
   const { postId } = useParams();
@@ -32,7 +34,7 @@ export const Post = () => {
   };
 
   return (
-    <div>
+    <section className="py-2">
       <div className="mb-4">
         {post && (
           <Card>
@@ -42,7 +44,13 @@ export const Post = () => {
                 <div>By {post.author.nickName}</div>
                 <BadgesList tags={post.tags} />
               </Card.Subtitle>
-              <p>{post.body}</p>
+              <Editor
+                readOnly
+                value={post.slateValue}
+                spellCheck={false}
+                style={{ padding: "12px", flexGrow: 1 }}
+                plugins={plugins}
+              />
               <p className="text-muted text-right">
                 Posted: {new Date(post.createdAt).toDateString()}
               </p>
@@ -52,12 +60,12 @@ export const Post = () => {
       </div>
       <div className="d-flex flex-column align-items-center">
         <AddComment onAddComment={handleAddComment} />
-        <div className="w-50">
+        <div className="w-40">
           {comments.map(comment => (
             <Comment key={comment._id} comment={comment} />
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };

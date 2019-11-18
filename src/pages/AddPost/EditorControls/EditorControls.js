@@ -1,142 +1,224 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
-import clsx from "clsx";
-import { RichUtils } from "draft-js";
+import React, { useState, useEffect, useMemo } from 'react'
+import { Button } from 'react-bootstrap'
+import clsx from 'clsx'
+import { RichUtils } from 'draft-js'
 
-import classes from "./EditorControls.module.scss";
+import classes from './EditorControls.module.scss'
 
-const TEXT_CONTROLS_LIST = [
+const TEXT_STYLE_BUTTONS = [
   {
-    value: "BOLD", // what is passed to RichUtils.toggleInlineStyle
-    icon: "fas fa-bold",
+    value: 'bold',
+    icon: 'fas fa-bold'
   },
   {
-    value: "ITALIC",
-    icon: "fas fa-italic",
+    value: 'italic',
+    icon: 'fas fa-italic'
   },
   {
-    value: "UNDERLINE",
-    icon: "fas fa-underline",
+    value: 'underlined',
+    icon: 'fas fa-underline'
   },
   {
-    value: "STRIKETHROUGH",
-    icon: "fas fa-strikethrough",
-  },
-];
+    value: 'code',
+    icon: 'fas fa-code'
+  }
+]
 
-const BLOCK_TYPES_LIST = [
+const BLOCK_TRANSFORM_BUTTONS = [
   {
-    value: "blockquote",
-    icon: "fas fa-quote-left",
+    value: 'text-left',
+    icon: 'fas fa-align-left'
   },
   {
-    value: "code-block",
-    icon: "fas fa-code",
+    value: 'text-center',
+    icon: 'fas fa-align-center'
   },
-];
+  {
+    value: 'text-right',
+    icon: 'fas fa-align-right'
+  },
+  {
+    value: 'blockquote',
+    icon: 'fas fa-quote-left'
+  }
+]
 
-export const EditorControls = ({
-  fontsMap,
-  handleChange,
-  editorState,
-  editorRef,
-}) => {
-  const [menuShown, setMenuShown] = useState(false);
-  const [selectedFontSize, setSelectedFontSize] = useState(14);
+const LISTS_BUTTONS = [
+  {
+    value: 'unordered-list',
+    icon: 'fas fa-list-ul'
+  },
+  {
+    value: 'ordered-list',
+    icon: 'fas fa-list-ol'
+  }
+]
 
-  useEffect(() => {}, []);
+const FONT_SIZES = Array.from(new Array(30).keys()).filter(
+  fontSize => fontSize > 10 && fontSize % 2 === 0
+)
 
-  const currentInlineStyles = editorState.getCurrentInlineStyle();
+export const EditorControls = ({ editorRef }) => {
+  const [menuShown, setMenuShown] = useState(false)
 
-  const toggleFontsMenu = e => {
-    e.preventDefault();
-    setMenuShown(!menuShown);
-  };
+  const getFontSize = () => {
+    if (Object.keys(editorRef.current).length > 0) {
+      const mark = editorRef.current.value.marks.find(
+        mark => mark.type === 'font-size'
+      )
+      if (mark) {
+        return mark.getIn(['data', 'fontSize'])
+      }
+      return 16
+    }
+  }
 
+  console.log(getFontSize())
   const preventDefault = (action, ...args) => e => {
-    e.preventDefault();
-    action(...args);
-  };
+    e.preventDefault()
+    action(...args)
+  }
 
-  const toggleBlock = value => {
-    handleChange(RichUtils.toggleBlockType(editorState, value));
-  };
+  const toggleFontsMenu = () => {
+    setMenuShown(!menuShown)
+  }
 
-  const toggleInlineStyle = value => {
-    handleChange(RichUtils.toggleInlineStyle(editorState, value));
-  };
+  const toggleMarkType = markType => {
+    editorRef.current.toggleMark(markType)
+  }
 
-  const toggleFontSize = value => {
-    console.log(value, "font size", editorRef.current);
-    const newEditroState = RichUtils.toggleInlineStyle(
-      editorState,
-      value.toString()
-    );
-    setSelectedFontSize(value);
-    handleChange(newEditroState);
-    setMenuShown(false);
-  };
+  const toggleBlockType = blockType => {
+    editorRef.current.setBlocks(
+      isBlockTypeSelected(blockType) ? 'paragraph' : blockType
+    )
+  }
 
-  const selection = editorState.getSelection();
-  const blockType = editorState
-    .getCurrentContent()
-    .getBlockForKey(selection.getStartKey())
-    .getType();
+  const isBlockTypeSelected = blockType => {
+    if (editorRef.current.value) {
+      if (['ordered-list', 'unordered-list'].includes(blockType)) {
+        const {
+          value: { document, blocks }
+        } = editorRef.current
 
-  console.log("currentInlineStyles", currentInlineStyles.toObject());
-  /* ***BUG*** when toolbar button is clicked and editor is not focused styling is not applied */
+        if (blocks.size > 0) {
+          const parent = document.getParent(blocks.first().key)
+          return hasBlock('list-item') && parent && parent.type === blockType
+        }
+      }
+
+      return hasBlock(blockType)
+    }
+    return false
+  }
+
+  const isMarkTypeSelected = markType => {
+    if (editorRef.current.value) {
+      return editorRef.current.value.marks.some(mark => mark.type === markType)
+    }
+    return false
+  }
+
+  const changeFontSize = fontSize => {
+    editorRef.current.value.marks.forEach(mark => {
+      if (mark.type === 'font-size') {
+        editorRef.current.removeMark(mark)
+      }
+    })
+    editorRef.current.addMark({
+      type: 'font-size',
+      data: { fontSize: fontSize }
+    })
+  }
+
+  const hasBlock = type => {
+    const { value } = editorRef.current
+    return value.blocks.some(node => node.type === type)
+  }
+
+  const toggleLists = listType => {
+    const { value } = editorRef.current
+
+    const isList = hasBlock('list-item')
+    const isType = value.blocks.some(block => {
+      return !!value.document.getClosest(
+        block.key,
+        parent => parent.type === listType
+      )
+    })
+    if (isList && isType) {
+      return editorRef.current
+        .setBlocks('paragraph')
+        .unwrapBlock('unordered-list')
+        .unwrapBlock('ordered-list')
+    }
+
+    if (isList) {
+      return editorRef.current
+        .unwrapBlock(
+          listType === 'unordered-list' ? 'ordered-list' : 'unordered-list'
+        )
+        .wrapBlock(listType)
+    }
+    editorRef.current.setBlocks('list-item').wrapBlock(listType)
+  }
+
   return (
     <div className={classes.controls}>
-      {TEXT_CONTROLS_LIST.map(control => (
+      <div>
+        {TEXT_STYLE_BUTTONS.map(textStyleBtn => (
+          <Button
+            key={textStyleBtn.value}
+            size='sm'
+            variant='outline-light'
+            className={clsx(
+              classes.controlBtn,
+              isMarkTypeSelected(textStyleBtn.value) && classes.highlight
+            )}
+            onPointerDown={preventDefault(toggleMarkType, textStyleBtn.value)}
+          >
+            <i className={textStyleBtn.icon} />
+          </Button>
+        ))}
+      </div>
+      <div>
+        {BLOCK_TRANSFORM_BUTTONS.map(textAlignBtn => (
+          <Button
+            key={textAlignBtn.value}
+            size='sm'
+            variant='outline-light'
+            className={clsx(
+              classes.controlBtn,
+              isBlockTypeSelected(textAlignBtn.value) && classes.highlight
+            )}
+            onPointerDown={preventDefault(toggleBlockType, textAlignBtn.value)}
+          >
+            <i className={textAlignBtn.icon} />
+          </Button>
+        ))}
+      </div>
+      <div
+        className={classes.customSelectWrapper}
+        onMouseLeave={preventDefault(setMenuShown, false)}
+      >
         <Button
-          key={`${control.value}-${control.icon}`}
-          variant="outline-light"
-          size="sm"
-          onMouseDown={preventDefault(toggleInlineStyle, control.value)}
-          className={clsx(
-            classes.controlBtn,
-            currentInlineStyles.has(control.value) && classes.highlight
-          )}
+          variant='outline-light'
+          size='sm'
+          className={clsx(classes.controlBtn, 'd-flex w-100 px-2')}
+          onMouseEnter={preventDefault(setMenuShown, true)}
+          onMouseDown={preventDefault(toggleFontsMenu)}
         >
-          <i className={control.icon}></i>
-        </Button>
-      ))}
-
-      <div className={clsx(classes.verticalDivider, "bg-white mx-1")} />
-
-      {BLOCK_TYPES_LIST.map(blockTypeControl => (
-        <Button
-          key={`${blockTypeControl.value}-${blockTypeControl.icon}`}
-          variant="outline-light"
-          size="sm"
-          onMouseDown={preventDefault(toggleBlock, blockTypeControl.value)}
-          className={clsx(
-            classes.controlBtn,
-            blockTypeControl.value === blockType && classes.highlight
-          )}
-        >
-          <i className={blockTypeControl.icon}></i>
-        </Button>
-      ))}
-
-      <div className={classes.customSelectWrapper}>
-        <Button
-          variant="outline-light"
-          size="sm"
-          className={classes.controlBtn}
-          onMouseDown={toggleFontsMenu}
-        >
-          {selectedFontSize}
+          <span className='mr-2'>{getFontSize()}</span>
+          <i className='fas fa-sort-down' />
         </Button>
         {menuShown && (
           <div className={classes.selectMenu}>
-            {Object.keys(fontsMap).map(font => (
+            {FONT_SIZES.map(font => (
               <Button
                 key={font}
-                variant="outline-light"
-                size="sm"
+                variant='outline-light'
+                size='sm'
                 className={classes.controlBtn}
-                onMouseDown={preventDefault(toggleFontSize, font)}
+                onMouseDown={preventDefault(changeFontSize, font)}
               >
                 {font}
               </Button>
@@ -144,6 +226,22 @@ export const EditorControls = ({
           </div>
         )}
       </div>
+      <div>
+        {LISTS_BUTTONS.map(listButton => (
+          <Button
+            key={listButton.value}
+            size='sm'
+            variant='outline-light'
+            className={clsx(
+              classes.controlBtn,
+              isBlockTypeSelected(listButton.value) && classes.highlight
+            )}
+            onPointerDown={preventDefault(toggleLists, listButton.value)}
+          >
+            <i className={listButton.icon} />
+          </Button>
+        ))}
+      </div>
     </div>
-  );
-};
+  )
+}

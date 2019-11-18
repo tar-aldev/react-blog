@@ -1,90 +1,81 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  convertFromRaw,
-  convertToRaw,
-} from "draft-js";
-import "draft-js/dist/Draft.css";
+import { useDispatch } from "react-redux";
 import { Button, Card, FormControl } from "react-bootstrap";
-import classes from "./AddPost.module.scss";
-import clsx from "clsx";
+import { Editor } from "slate-react";
+import { Value } from "slate";
+import Plain from "slate-plain-serializer";
 import { EditorControls } from "./EditorControls/EditorControls";
-
-const fontSizes = Array.from(Array(50).keys()).filter(
-  value => value > 9 && value % 2 === 0
-);
-
-const fontsMap = fontSizes.reduce((acc, curr) => {
-  acc[curr] = { fontSize: `${curr}px` };
-  return acc;
-}, {});
-
-const rootStylesMap = {
-  ...fontsMap,
-};
+import plugins from "./plugins";
+import { addPost } from "store/actions/posts";
+import StyledTextNode from "./StyledTextNode/StyledTextNode";
 
 export const AddPost = () => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorValue, setEditorValue] = useState(Plain.deserialize(""));
+  const dispatch = useDispatch();
+
   const editorRef = useRef({});
 
   useEffect(() => {
+    /* const contentFromLs = getContent()
+    console.log('contentFromLs', contentFromLs) */
+    setInitialEditorState();
+    /* if (contentFromLs) {
+      setEditorValue(contentFromLs)
+    } */
     editorRef.current.focus();
   }, []);
 
-  const handleChange = editorState => {
-    setEditorState(editorState);
+  const setInitialEditorState = () => {
+    editorRef.current.setBlocks("text-left");
+    editorRef.current.addMark({ type: "font-size", data: { fontSize: 16 } });
   };
 
-  const handleKeyCommand = (command, newEditorState) => {
-    console.log("command", command);
-    const newState = RichUtils.handleKeyCommand(newEditorState, command);
+  const handleEditorChange = ({ value }) => {
+    /* const content = JSON.stringify(value.toJSON())
+    localStorage.setItem('content', content) */
+    setEditorValue(value);
+  };
 
-    if (newState) {
-      handleChange(newState);
-      return "handled";
+  const handlePublishPost = () => {
+    const encodedBody = JSON.stringify(editorValue.toJSON()); // value in format for Slate editor
+    const plainStringBody = Plain.serialize(editorValue); // value in common string format (so can be searched in db)
+    dispatch(addPost({ encodedBody, plainStringBody }));
+  };
+
+  /* const getContent = () => {
+    const contentInJson = localStorage.getItem("content");
+    if (contentInJson) {
+      return Value.fromJSON(JSON.parse(contentInJson));
     }
-    return "not-handled";
-  };
-
-  const convert = () => {
-    const raw = convertToRaw(editorState.getCurrentContent());
-    const unpacked = convertFromRaw(raw);
-    console.log("RAW", raw, "unpacked", unpacked);
-  };
-
-  const blockStyleCustomizer = contentBlock => {
-    if (contentBlock.getType() === "blockquote") {
-      return classes.qoutedText;
-    }
-    if (contentBlock.getType() === "code-block") {
-      return classes.codeBlock;
-    }
-  };
+    return null;
+  }; */
 
   return (
     <div className="py-4">
       <h6>Write your own post</h6>
       <Card style={{ height: "80%" }}>
-        <Card.Body className="p-0">
-          <div className={clsx(classes.editor, "p-2")}>
-            <EditorControls
-              fontsMap={fontsMap}
-              editorState={editorState}
-              handleChange={handleChange}
-              editorRef={editorRef}
-            />
-            <hr className="my-1 bg-info" />
-            <Editor
-              editorState={editorState}
-              handleKeyCommand={handleKeyCommand}
-              onChange={handleChange}
-              blockStyleFn={blockStyleCustomizer}
-              customStyleMap={rootStylesMap}
-              ref={editorRef}
-            />
-          </div>
+        <Card.Body className="d-flex flex-column">
+          <EditorControls editorRef={editorRef} />
+          <hr className="w-100 bg-white m-0" />
+          <Editor
+            ref={editorRef}
+            value={editorValue}
+            spellCheck={false}
+            plugins={plugins}
+            onChange={handleEditorChange}
+            style={{ padding: "12px", flexGrow: 1 }}
+            onFocus={(event, editor) => {
+              editor.focus();
+            }}
+          />
+          <Button
+            disabled={!Plain.serialize(editorValue).length}
+            onClick={handlePublishPost}
+            variant="outline-light"
+            className="align-self-end"
+          >
+            Publish article
+          </Button>
         </Card.Body>
       </Card>
     </div>

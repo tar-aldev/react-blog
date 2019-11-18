@@ -27,7 +27,7 @@ export default (state = initialState, action) => {
     case GET_POST_SUCCESS:
       return {
         ...state,
-        post: action.payload.post,
+        post: action.payload,
         isLoading: false,
       };
     default:

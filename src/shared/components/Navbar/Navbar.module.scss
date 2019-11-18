@@ -1,13 +1,26 @@
+@import 'src/utilities/__variables';
+
 .root {
-  width: 100%;
+  width: 14%;
   height: 100vh;
-  background-color: rgba($color: #ffffff, $alpha: 0.1);
-  padding: 2rem 0 2rem 1rem;
-  /* -webkit-box-shadow: 10px 0px 5px -5px rgba($color: #ffffff, $alpha: 0.1);
-  -moz-box-shadow: 10px 0px 5px -5px rgba($color: #ffffff, $alpha: 0.1);
-  box-shadow: 10px 0px 5px -5px rgba($color: #ffffff, $alpha: 0.1); */
+  position: fixed;
 }
 
 .divider {
   flex-grow: 1;
+}
+
+.logoutButton {
+  border: none;
+  text-align: left;
+  font-size: $navBarFontSize;
+  color: $primary;
+  padding: 0 1rem;
+
+  &:hover {
+    border: none;
+    background: inherit;
+    color: #9a4912;
+    cursor: pointer;
+  }
 }

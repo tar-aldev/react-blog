@@ -3,13 +3,13 @@ import apiService from "services/api.service";
 import {
   GET_POST_COMMENTS_ASYNC,
   getPostCommentsSuccess,
+  ADD_POST_COMMENT_ASYNC,
+  addPostCommentSuccess,
 } from "store/actions/comments";
-
-const service = apiService();
 
 function* getPostCommentsAsync({ payload }) {
   try {
-    const { data } = yield call(service.get, `comments?post=${payload}`);
+    const { data } = yield call(apiService.getData, `comments?post=${payload}`);
     console.log("data", data);
     yield put(getPostCommentsSuccess(data.comments));
   } catch (error) {
@@ -21,6 +21,21 @@ function* watchGetPostCommentsAsync() {
   yield takeEvery(GET_POST_COMMENTS_ASYNC, getPostCommentsAsync);
 }
 
+function* addPostCommentAsync({ payload }) {
+  const { comment, resetForm } = payload;
+  try {
+    const { data } = yield call(apiService.post, `comments`, comment);
+    resetForm();
+    yield put(addPostCommentSuccess(data.comment));
+  } catch (error) {
+    console.log("ERR", error);
+  }
+}
+
+function* watchAddPostCommentAsync() {
+  yield takeEvery(ADD_POST_COMMENT_ASYNC, addPostCommentAsync);
+}
+
 export default function* postsSaga() {
-  yield all([watchGetPostCommentsAsync()]);
+  yield all([watchGetPostCommentsAsync(), watchAddPostCommentAsync()]);
 }

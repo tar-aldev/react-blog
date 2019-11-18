@@ -10,11 +10,9 @@ import {
 } from "store/actions/posts";
 import { getValueFromJson } from "utilities/richEditor";
 
-const service = apiService();
-
 function* getPostsAsync() {
   try {
-    const { data } = yield call(service.get, "posts");
+    const { data } = yield call(apiService.getData, "posts");
     yield put(getPostsSuccess(data));
   } catch (error) {}
 }
@@ -25,7 +23,7 @@ function* watchGetPostsAsync() {
 
 function* getPostAsync({ payload }) {
   try {
-    const { data } = yield call(service.get, `posts/${payload}`);
+    const { data } = yield call(apiService.getData, `posts/${payload}`);
 
     yield put(
       getPostSuccess({
@@ -45,7 +43,7 @@ function* watchGetPostAsync() {
 function* addPostAsync({ payload }) {
   console.log("add POST", payload);
   try {
-    const { data } = yield call(service.post, `posts`, payload);
+    const { data } = yield call(apiService.post, `posts`, payload);
     yield put(addPostSuccess(data));
   } catch (error) {}
 }

@@ -1,14 +1,27 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:8000/api";
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:8000/api",
+});
 
-export default () => {
-  return {
-    get: url => {
-      return axios.get(url);
-    },
-    post: (url, data) => {
-      return axios.post(url, data);
-    },
+axiosInstance.interceptors.request.use(config => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    return {
+      ...config,
+      headers: { ...config.headers, Authorization: `Bearer ${token}` },
+    };
+  }
+  return config;
+});
+class AxiosService {
+  getData = url => {
+    return axiosInstance.get(url);
   };
-};
+  post = (url, data) => {
+    return axiosInstance.post(url, data);
+  };
+}
+
+export default new AxiosService();

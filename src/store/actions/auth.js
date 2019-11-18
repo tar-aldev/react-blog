@@ -11,6 +11,8 @@ export const AUTH_ERROR = "[Auth] Authentication error";
 export const SIGN_UP_ASYNC = "[Auth] Sign up async";
 export const SIGN_UP_SUCCESS = "[Auth] Sign up success";
 
+export const LOGOUT = "[Auth] Logout";
+
 export const signInWithCredentials = payload => {
   return {
     type: SIGN_IN_WITH_CREDENTIALS_ASYNC,
@@ -26,7 +28,6 @@ export const signInWithGoogle = payload => {
 };
 
 export const authSuccess = payload => {
-  console.log("sign in success", payload);
   putItemSingle("token", payload.token);
   return {
     type: AUTH_SUCCESS,
@@ -52,5 +53,11 @@ export const signUpSuccess = payload => {
   return {
     type: SIGN_UP_SUCCESS,
     payload,
+  };
+};
+
+export const logout = () => {
+  return {
+    type: LOGOUT,
   };
 };

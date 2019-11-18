@@ -7,12 +7,11 @@ import {
   authSuccess,
   authError,
 } from "store/actions/auth";
-const service = apiService();
 
 function* signUpAsync({ payload: { credentials, redirect } }) {
   console.log("sign up saga", credentials, redirect);
   try {
-    const { data } = yield call(service.post, "users", credentials);
+    const { data } = yield call(apiService.post, "users", credentials);
     yield put(authSuccess(data));
     yield redirect("/posts");
   } catch (error) {
@@ -26,9 +25,8 @@ function* watchSignUpAsync() {
 }
 
 function* signInAsync({ payload: { credentials, redirect } }) {
-  console.log("sign in saga", credentials, redirect);
   try {
-    const { data } = yield call(service.post, "auth/signin", credentials);
+    const { data } = yield call(apiService.post, "auth/signin", credentials);
     yield put(authSuccess(data));
     yield redirect("/posts");
   } catch (error) {
@@ -43,7 +41,7 @@ function* watchSignInAsync() {
 
 function* signInAsyncGoogle({ payload: { code, redirect } }) {
   try {
-    const { data } = yield call(service.post, "auth/signin-google", code);
+    const { data } = yield call(apiService.post, "auth/signin-google", code);
     yield put(authSuccess(data));
     yield redirect("/posts");
   } catch (error) {

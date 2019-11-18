@@ -29,6 +29,7 @@ const Posts = () => {
                   {post.title}
                 </NavLink>
               </Card.Title>
+              <p>{post.plainStringBody.slice(0, 100)}...</p>
               <Card.Subtitle className="d-flex justify-content-between">
                 <div>By {post.author.nickName}</div>
                 <BadgesList tags={post.tags} />

@@ -5,7 +5,7 @@ import posts from "store/reducers/posts";
 import { getPost } from "store/actions/posts";
 import useLoader from "hooks/useLoader";
 import { Card, Badge } from "react-bootstrap";
-import { getPostComments } from "store/actions/comments";
+import { getPostComments, addPostComment } from "store/actions/comments";
 import { Comment } from "shared/components/Comment/Comment";
 import { AddComment } from "shared/components/AddComment/AddComment";
 import { BadgesList } from "shared/components/BadgesList/BadgesList";
@@ -29,8 +29,10 @@ export const Post = () => {
     dispatch(getPostComments(postId));
   }, []);
 
-  const handleAddComment = comment => {
-    console.log("comment", comment);
+  const handleAddComment = ({ comment, resetForm }) => {
+    dispatch(
+      addPostComment({ comment: { ...comment, post: postId }, resetForm })
+    );
   };
 
   return (
@@ -60,7 +62,7 @@ export const Post = () => {
       </div>
       <div className="d-flex flex-column align-items-center">
         <AddComment onAddComment={handleAddComment} />
-        <div className="w-40">
+        <div className="w-50">
           {comments.map(comment => (
             <Comment key={comment._id} comment={comment} />
           ))}

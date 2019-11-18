@@ -4,7 +4,6 @@ import { Button, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import AuthContainer from "pages/Login/AuthContainer/AuthContainer";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axiosService from "services/api.service";
 import { useDispatch, useSelector } from "react-redux";
 import { GoogleAuth } from "pages/Login/GoogleAuth/GoogleAuth";
 import { signInWithGoogle, signInWithCredentials } from "store/actions/auth";
@@ -19,8 +18,6 @@ const validationSchema = Yup.object({
     .required(requiredError),
   password: Yup.string().required(requiredError),
 });
-
-const service = axiosService();
 
 const Login = () => {
   const { token, error, isLoading } = useSelector(state => state.authReducer);

@@ -4,15 +4,13 @@ import axiosService from "services/api.service";
 import { Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 
-const service = axiosService();
-
 export const GoogleAuth = ({ onSignInSuccess, onSignInFail }) => {
   const [googleSignUrl, setGoogleSignUrl] = useState(null);
   const { search } = useLocation();
 
   useEffect(() => {
     const getUrl = async () => {
-      const { data } = await service.get("auth/google-signin-url");
+      const { data } = await axiosService.getData("auth/google-signin-url");
       setGoogleSignUrl(data.googleLoginUrl);
     };
     getUrl();
@@ -23,7 +21,7 @@ export const GoogleAuth = ({ onSignInSuccess, onSignInFail }) => {
       const { code } = queryString.parse(search);
       onSignInSuccess({ code });
     }
-  }, [search]);
+  }, [search, onSignInSuccess]);
 
   return (
     <Button

@@ -3,6 +3,8 @@
 - Learn base of redux-sagas (how to set them up)
 - Learn rich text editors by using Slate.js at [Add post page](http://localhost:3000/add-post)
 - Setting up google auth for client
+- Trying css modules
+- Trying react-bootstrap + bootswatch theme
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

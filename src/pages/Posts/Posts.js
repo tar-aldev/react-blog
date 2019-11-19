@@ -29,7 +29,7 @@ const Posts = () => {
             </InputGroup.Text>
           </InputGroup.Prepend>
           <FormControl
-            placeholder="Filter by article name..."
+            placeholder="Filter by article title..."
             value={filterStr}
             onChange={onFilterChange}
           />

@@ -5,7 +5,7 @@ $visibleLine: 2%;
   height: 100vh;
   position: fixed;
   width: $width;
-  right: 0 calc(#{$visibleLine} - #{$width});
+  right: calc(#{$visibleLine} - #{$width});
   top: 0;
   padding: $visibleLine;
   transition: right .4s;

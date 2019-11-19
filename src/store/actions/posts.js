@@ -20,6 +20,13 @@ export const getPosts = () => {
   };
 };
 
+export const getPostsFiltered = payload => {
+  return {
+    type: GET_POSTS_ASYNC,
+    payload,
+  };
+};
+
 export const getPostsSuccess = payload => {
   return {
     type: GET_POSTS_SUCCESS,

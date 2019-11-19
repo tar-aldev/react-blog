@@ -2,5 +2,14 @@
 
 .commentInput {
   resize: none;
-  border: 0.4px solid $secondary;
+  border: none;
+  box-shadow: none;
+  border-bottom: 0.8px solid $secondary;
+  transition: border-bottom .4s;
+
+  &:focus {
+    border: none;
+    box-shadow: none;
+    border-bottom: 1px solid $white;
+  }
 }

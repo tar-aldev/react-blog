@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PostPreview from "shared/components/PostPreview/PostPreview";
 import { InputGroup, FormControl } from "react-bootstrap";
 import PostsFiltersPanel from "./PostsFiltersPanel/PostsFiltersPanel";
+import InfiniteScroll from "shared/components/InfiniteScroll/InfiniteScroll";
 
 const Posts = () => {
   const dispatch = useDispatch();
@@ -12,11 +13,16 @@ const Posts = () => {
   const [filterStr, setFilterStr] = useState("");
 
   useEffect(() => {
-    dispatch(getPosts());
+    dispatch(getPosts({ offset: 0, limit: 6 }));
   }, []);
 
   const onFilterChange = e => {
     setFilterStr(e.target.value);
+  };
+
+  const onFetchMorePosts = () => {
+    console.log("fetch more posts");
+    dispatch(getPosts({ offset: posts.length, limit: 6 }));
   };
 
   if (!isLoading) {
@@ -34,9 +40,11 @@ const Posts = () => {
             onChange={onFilterChange}
           />
         </InputGroup>
-        {posts.map(post => (
-          <PostPreview key={post._id} post={post} />
-        ))}
+        <InfiniteScroll fetchMoreData={onFetchMorePosts}>
+          {posts.map(post => (
+            <PostPreview key={post._id} post={post} />
+          ))}
+        </InfiniteScroll>
         <PostsFiltersPanel />
       </div>
     );

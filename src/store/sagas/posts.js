@@ -12,9 +12,23 @@ import {
 } from "store/actions/posts";
 import { getValueFromJson } from "utilities/richEditor";
 
-function* getPostsAsync() {
+/* paylaod contains offset and limit properties */
+function* getPostsAsync({ payload }) {
+  console.log("payload", payload);
+  let queryParamsString = "";
+  for (let key in payload) {
+    if (queryParamsString.length === 0) {
+      queryParamsString = queryParamsString.concat(`?${key}=${payload[key]}`);
+    } else {
+      queryParamsString = queryParamsString.concat(`&${key}=${payload[key]}`);
+    }
+  }
+
   try {
-    const { data } = yield call(apiService.getData, "posts");
+    const { data } = yield call(
+      apiService.getData,
+      `posts${queryParamsString}`
+    );
     yield put(getPostsSuccess(data));
   } catch (error) {}
 }

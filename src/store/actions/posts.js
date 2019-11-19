@@ -14,13 +14,7 @@ export const GET_TAGS_ASYNC = "[Posts] Get tags async";
 export const GET_TAGS_SUCCESS = "[Posts] Get tags success";
 export const GET_TAGS_ERROR = "[Posts] Get tags error";
 
-export const getPosts = () => {
-  return {
-    type: GET_POSTS_ASYNC,
-  };
-};
-
-export const getPostsFiltered = payload => {
+export const getPosts = payload => {
   return {
     type: GET_POSTS_ASYNC,
     payload,

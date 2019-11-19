@@ -11,6 +11,9 @@ const Multiselect = ({ options, selectedOptions, setSelectedOptions }) => {
   console.log("selectedOptions", selectedOptions);
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
   }, []);
 
   const handleOutsideClick = e => {

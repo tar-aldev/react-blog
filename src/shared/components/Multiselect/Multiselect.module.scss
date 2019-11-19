@@ -1,0 +1,41 @@
+@import "src/utilities/__variables.scss";
+
+$pointer: pointer;
+
+.selectedOptionsWrapper {
+  position: relative;
+  justify-content: space-between;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  cursor: $pointer;
+  padding: $inputPadding;
+}
+
+.placeholderText {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.optionsContainer {
+  position: absolute;
+  width: 100%;
+  z-index: 11;
+  top: 36px;
+  left: 0;
+  border: 1px solid rgba(0, 0, 0, 0.75);
+  box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.option {
+  cursor: $pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.selectedOption {
+  &:hover {
+    cursor: $pointer;
+  }
+}

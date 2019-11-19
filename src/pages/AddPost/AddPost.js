@@ -1,27 +1,27 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { Button, Card, FormControl } from "react-bootstrap";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Card, Form } from "react-bootstrap";
 import { Editor } from "slate-react";
-import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import { EditorControls } from "./EditorControls/EditorControls";
 import plugins from "./plugins";
-import { addPost } from "store/actions/posts";
-import StyledTextNode from "./StyledTextNode/StyledTextNode";
+import { addPost, getTags } from "store/actions/posts";
+import Multiselect from "shared/components/Multiselect/Multiselect";
+import classes from "./AddPost.module.scss";
+import clsx from "clsx";
 
 export const AddPost = () => {
   const [editorValue, setEditorValue] = useState(Plain.deserialize(""));
-  const dispatch = useDispatch();
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [title, setTitle] = useState("");
 
+  const dispatch = useDispatch();
+  const { tags } = useSelector(state => state.postsReducer);
   const editorRef = useRef({});
 
   useEffect(() => {
-    /* const contentFromLs = getContent()
-    console.log('contentFromLs', contentFromLs) */
+    dispatch(getTags());
     setInitialEditorState();
-    /* if (contentFromLs) {
-      setEditorValue(contentFromLs)
-    } */
     editorRef.current.focus();
   }, []);
 
@@ -31,30 +31,54 @@ export const AddPost = () => {
   };
 
   const handleEditorChange = ({ value }) => {
-    /* const content = JSON.stringify(value.toJSON())
-    localStorage.setItem('content', content) */
     setEditorValue(value);
   };
 
-  const handlePublishPost = () => {
+  const onPublishPost = () => {
     const encodedBody = JSON.stringify(editorValue.toJSON()); // value in format for Slate editor
     const plainStringBody = Plain.serialize(editorValue); // value in common string format (so can be searched in db)
-    dispatch(addPost({ encodedBody, plainStringBody }));
+    dispatch(
+      addPost({ encodedBody, plainStringBody, title, tags: selectedTags })
+    );
   };
 
-  /* const getContent = () => {
-    const contentInJson = localStorage.getItem("content");
-    if (contentInJson) {
-      return Value.fromJSON(JSON.parse(contentInJson));
-    }
-    return null;
-  }; */
+  const onTitleChange = e => {
+    setTitle(e.target.value);
+  };
+
+  const canSubmit = useMemo(() => {
+    return (
+      Plain.serialize(editorValue).length > 400 &&
+      title.length > 6 &&
+      selectedTags.length > 0
+    );
+  }, [editorValue, title.length, selectedTags.length]);
 
   return (
-    <div className="py-4">
-      <h6>Write your own post</h6>
-      <Card style={{ height: "80%" }}>
-        <Card.Body className="d-flex flex-column">
+    <div className="py-2">
+      <h5>Write your own post</h5>
+      <Form>
+        <Form.Group controlId="formBasicEmail" className="bg-secondary mb-2">
+          <Form.Control
+            value={title}
+            onChange={onTitleChange}
+            type="text"
+            placeholder="Article title..."
+            className="bg-secondary text-white"
+          />
+        </Form.Group>
+        <Multiselect
+          options={tags}
+          selectedOptions={selectedTags}
+          setSelectedOptions={setSelectedTags}
+        />
+      </Form>
+      <div
+        style={{ minHeight: "72vh" }}
+        className={clsx("bg-secondary mb-2", classes.editorWrapper)}
+        onClick={editorRef.current.focus}
+      >
+        <div className="d-flex flex-column">
           <EditorControls editorRef={editorRef} />
           <hr className="w-100 bg-white m-0" />
           <Editor
@@ -63,21 +87,21 @@ export const AddPost = () => {
             spellCheck={false}
             plugins={plugins}
             onChange={handleEditorChange}
-            style={{ padding: "12px", flexGrow: 1 }}
             onFocus={(event, editor) => {
               editor.focus();
             }}
           />
-          <Button
-            disabled={!Plain.serialize(editorValue).length}
-            onClick={handlePublishPost}
-            variant="outline-light"
-            className="align-self-end"
-          >
-            Publish article
-          </Button>
-        </Card.Body>
-      </Card>
+        </div>
+      </div>
+      <div className="d-flex justify-content-end">
+        <Button
+          disabled={!canSubmit}
+          onClick={onPublishPost}
+          variant="outline-light"
+        >
+          Publish article
+        </Button>
+      </div>
     </div>
   );
 };

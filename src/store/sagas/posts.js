@@ -7,6 +7,8 @@ import {
   getPostSuccess,
   ADD_POST_ASYNC,
   addPostSuccess,
+  GET_TAGS_ASYNC,
+  getTagsSuccess,
 } from "store/actions/posts";
 import { getValueFromJson } from "utilities/richEditor";
 
@@ -52,6 +54,25 @@ function* watchAddPostAsync() {
   yield takeEvery(ADD_POST_ASYNC, addPostAsync);
 }
 
+function* getTagsAsync() {
+  try {
+    const { data } = yield call(apiService.getData, `tags`);
+
+    yield put(getTagsSuccess(data.tags));
+  } catch (error) {
+    console.error("get post async", error);
+  }
+}
+
+function* watchGetTagsAsync() {
+  yield takeEvery(GET_TAGS_ASYNC, getTagsAsync);
+}
+
 export default function* postsSaga() {
-  yield all([watchGetPostsAsync(), watchGetPostAsync(), watchAddPostAsync()]);
+  yield all([
+    watchGetPostsAsync(),
+    watchGetPostAsync(),
+    watchAddPostAsync(),
+    watchGetTagsAsync(),
+  ]);
 }

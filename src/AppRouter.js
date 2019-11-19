@@ -20,9 +20,6 @@ const AppRouter = () => {
       <Route path="/posts">
         <Posts />
       </Route>
-      <Route path="/my-posts">
-        <Posts />
-      </Route>
       <Route path="/add-post">
         <AddPost />
       </Route>

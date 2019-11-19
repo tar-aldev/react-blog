@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { getPosts } from "store/actions/posts";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Badge } from "react-bootstrap";
-import { NavLink as NavLinkRouter } from "react-router-dom";
+
 import useLoader from "hooks/useLoader";
-import NavLink from "react-bootstrap/NavLink";
-import { BadgesList } from "shared/components/BadgesList/BadgesList";
+
+import PostPreview from "shared/components/PostPreview/PostPreview";
 
 const Posts = () => {
   const dispatch = useDispatch();
@@ -17,28 +16,8 @@ const Posts = () => {
   return useLoader(() => {
     return (
       <div className="p-2">
-        {postsState.posts.map((post, index) => (
-          <Card key={index} className="mb-2">
-            <Card.Body>
-              <Card.Title>
-                <NavLink
-                  as={NavLinkRouter}
-                  to={`posts/${post._id}`}
-                  className="px-0"
-                >
-                  {post.title}
-                </NavLink>
-              </Card.Title>
-              <p>{post.plainStringBody.slice(0, 100)}...</p>
-              <Card.Subtitle className="d-flex justify-content-between">
-                <div>By {post.author.nickName}</div>
-                <BadgesList tags={post.tags} />
-              </Card.Subtitle>
-              <p className="text-muted">
-                Posted: {new Date(post.createdAt).toDateString()}
-              </p>
-            </Card.Body>
-          </Card>
+        {postsState.posts.map(post => (
+          <PostPreview key={post._id} post={post} />
         ))}
       </div>
     );

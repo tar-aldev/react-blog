@@ -1,7 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import PostPreview from "../PostPreview/PostPreview";
-import clsx from "clsx";
 import classes from "./InfiniteScroll.module.scss";
 import LoaderIndicator from "./LoaderIndicator";
 
@@ -28,7 +25,7 @@ const InfiniteScroll = ({ children, fetchMoreData, isLoading }) => {
     <div style={{ height: "88vh" }}>
       <div
         ref={scrollContainerRef}
-        style={{ height: "86vh", overflowY: "scroll" }}
+        className={classes.listWrapper}
         onScroll={handleScroll}
       >
         {children}

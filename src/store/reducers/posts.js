@@ -4,6 +4,7 @@ import {
   GET_POST_ASYNC,
   GET_TAGS_SUCCESS,
   GET_POSTS_ASYNC,
+  CLEAR_POSTS_DATA,
 } from "store/actions/posts";
 
 const initialState = {
@@ -17,6 +18,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case CLEAR_POSTS_DATA:
+      return {
+        ...state,
+        posts: [],
+      };
     case GET_POSTS_ASYNC:
       return {
         ...state,

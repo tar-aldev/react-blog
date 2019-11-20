@@ -1,56 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { getPosts } from "store/actions/posts";
+import { getPosts, clearPostsData } from "store/actions/posts";
 import { useDispatch, useSelector } from "react-redux";
 
 import PostPreview from "shared/components/PostPreview/PostPreview";
 import { InputGroup, FormControl } from "react-bootstrap";
 import PostsFiltersPanel from "./PostsFiltersPanel/PostsFiltersPanel";
 import InfiniteScroll from "shared/components/InfiniteScroll/InfiniteScroll";
+import ArticlesSearch from "./ArticlesSearch/ArticlesSearch";
 
 const Posts = () => {
   const dispatch = useDispatch();
   const { posts, total, isLoading, error } = useSelector(
     state => state.postsReducer
   );
-  const [filterStr, setFilterStr] = useState("");
+  const [searchStr, setSearchStr] = useState("");
+  const [searchBy, setSearchBy] = useState("title");
 
   useEffect(() => {
-    dispatch(getPosts({ skip: 0, limit: 5 }));
-  }, []);
+    dispatch(clearPostsData());
+    searchStr.length === 0
+      ? fetchPosts(0)
+      : fetchPosts(0, { searchStr, searchBy });
+  }, [searchStr.length]);
 
-  const onFilterChange = e => {
-    setFilterStr(e.target.value);
+  const onSearchChange = e => {
+    setSearchStr(e.target.value);
+  };
+
+  const onSearchByChange = e => {
+    setSearchBy(e.target.value);
+  };
+
+  const fetchPosts = (skip = posts.length, additionalQueryParams) => {
+    dispatch(getPosts({ skip, limit: 6, ...additionalQueryParams }));
   };
 
   const onFetchMorePosts = () => {
     if (posts.length < total) {
-      console.log("fetch more posts", "posts.length", posts.length);
-      dispatch(getPosts({ skip: posts.length, limit: 6 }));
+      fetchPosts();
     }
   };
 
   return (
-    <div className="p-2">
-      <InputGroup className="mb-3">
-        <InputGroup.Prepend>
-          <InputGroup.Text id="basic-addon1">
-            <i className="fas fa-filter"></i>
-          </InputGroup.Text>
-        </InputGroup.Prepend>
-        <FormControl
-          placeholder="Filter by article title..."
-          value={filterStr}
-          onChange={onFilterChange}
+    <div>
+      <div className="p-2">
+        <ArticlesSearch
+          searchStr={searchStr}
+          onSearchChange={onSearchChange}
+          searchBy={searchBy}
+          onSearchByChange={onSearchByChange}
         />
-      </InputGroup>
-      <p className="text-primary">Total postsAmount: {total}</p>
-      {
-        <InfiniteScroll fetchMoreData={onFetchMorePosts} isLoading={isLoading}>
-          {posts.map(post => (
-            <PostPreview key={post._id} post={post} />
-          ))}
-        </InfiniteScroll>
-      }
+        <p className="text-primary">Total Posts Amount: {total}</p>
+        {
+          <InfiniteScroll
+            fetchMoreData={onFetchMorePosts}
+            isLoading={isLoading}
+          >
+            {posts.map(post => (
+              <PostPreview key={post._id} post={post} />
+            ))}
+          </InfiniteScroll>
+        }
+      </div>
       <PostsFiltersPanel />
     </div>
   );

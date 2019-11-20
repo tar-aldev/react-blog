@@ -1,4 +1,4 @@
-import { put, takeEvery, all, call } from "redux-saga/effects";
+import { put, takeEvery, all, call, debounce } from "redux-saga/effects";
 import apiService from "services/api.service";
 import {
   GET_POSTS_ASYNC,
@@ -33,7 +33,7 @@ function* getPostsAsync({ payload }) {
 }
 
 function* watchGetPostsAsync() {
-  yield takeEvery(GET_POSTS_ASYNC, getPostsAsync);
+  yield debounce(400, GET_POSTS_ASYNC, getPostsAsync);
 }
 
 function* getPostAsync({ payload }) {

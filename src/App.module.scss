@@ -1,0 +1,10 @@
+@import 'src/utilities/styling/main';
+
+body {
+  @include customScroll()
+}
+
+.contentContainer {
+  margin: 0 4% 0 16%;
+  width: calc(100vw - 18%);
+}

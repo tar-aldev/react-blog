@@ -14,6 +14,14 @@ export const GET_TAGS_ASYNC = "[Posts] Get tags async";
 export const GET_TAGS_SUCCESS = "[Posts] Get tags success";
 export const GET_TAGS_ERROR = "[Posts] Get tags error";
 
+export const CLEAR_POSTS_DATA = "[Posts] Clear posts data";
+
+export const clearPostsData = () => {
+  return {
+    type: CLEAR_POSTS_DATA,
+  };
+};
+
 export const getPosts = payload => {
   return {
     type: GET_POSTS_ASYNC,
@@ -43,7 +51,6 @@ export const getPost = id => {
 };
 
 export const getPostSuccess = payload => {
-  console.log("get post success", payload);
   return {
     type: GET_POST_SUCCESS,
     payload,

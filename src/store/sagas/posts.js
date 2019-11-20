@@ -14,7 +14,6 @@ import { getValueFromJson } from "utilities/richEditor";
 
 /* paylaod contains offset and limit properties */
 function* getPostsAsync({ payload }) {
-  console.log("payload", payload);
   let queryParamsString = "";
   for (let key in payload) {
     if (queryParamsString.length === 0) {

@@ -29,34 +29,31 @@ const Posts = () => {
     }
   };
 
-  if (!isLoading) {
-    return (
-      <div className="p-2">
-        <InputGroup className="mb-3">
-          <InputGroup.Prepend>
-            <InputGroup.Text id="basic-addon1">
-              <i className="fas fa-filter"></i>
-            </InputGroup.Text>
-          </InputGroup.Prepend>
-          <FormControl
-            placeholder="Filter by article title..."
-            value={filterStr}
-            onChange={onFilterChange}
-          />
-        </InputGroup>
-        <p className="text-primary">Total postsAmount: {total}</p>
-        <InfiniteScroll fetchMoreData={onFetchMorePosts}>
+  return (
+    <div className="p-2">
+      <InputGroup className="mb-3">
+        <InputGroup.Prepend>
+          <InputGroup.Text id="basic-addon1">
+            <i className="fas fa-filter"></i>
+          </InputGroup.Text>
+        </InputGroup.Prepend>
+        <FormControl
+          placeholder="Filter by article title..."
+          value={filterStr}
+          onChange={onFilterChange}
+        />
+      </InputGroup>
+      <p className="text-primary">Total postsAmount: {total}</p>
+      {
+        <InfiniteScroll fetchMoreData={onFetchMorePosts} isLoading={isLoading}>
           {posts.map(post => (
             <PostPreview key={post._id} post={post} />
           ))}
         </InfiniteScroll>
-        <PostsFiltersPanel />
-      </div>
-    );
-  }
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
+      }
+      <PostsFiltersPanel />
+    </div>
+  );
 };
 
 export default Posts;

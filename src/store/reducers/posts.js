@@ -3,6 +3,7 @@ import {
   GET_POST_SUCCESS,
   GET_POST_ASYNC,
   GET_TAGS_SUCCESS,
+  GET_POSTS_ASYNC,
 } from "store/actions/posts";
 
 const initialState = {
@@ -16,6 +17,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case GET_POSTS_ASYNC:
+      return {
+        ...state,
+        isLoading: true,
+      };
     case GET_POSTS_SUCCESS:
       const { payload } = action;
       return {

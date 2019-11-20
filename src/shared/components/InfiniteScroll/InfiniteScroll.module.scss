@@ -1,0 +1,32 @@
+$tile-bg: green;
+
+/* Wrapps entire loader indicator to prevent "jumping" */
+.loaderWrapper {
+  height: 5px;
+}
+
+.loaderContainer {
+  height: 100%;
+  display: flex;
+  position: relative;
+}
+
+.loaderIndicator {
+  /* position: absolute; */
+  width: 20%;
+  height: 100%;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-name: slidein;
+  animation-iteration-count: infinite;
+}
+
+@keyframes slidein {
+  from {
+    margin-left: 0;
+  }
+
+  to {
+    margin-left: 100%;
+  }
+}

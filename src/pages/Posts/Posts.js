@@ -44,7 +44,7 @@ const Posts = () => {
             onChange={onFilterChange}
           />
         </InputGroup>
-        <div className="d-flex">Total postsAmount: {total}</div>
+        <p className="text-primary">Total postsAmount: {total}</p>
         <InfiniteScroll fetchMoreData={onFetchMorePosts}>
           {posts.map(post => (
             <PostPreview key={post._id} post={post} />

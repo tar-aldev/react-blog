@@ -9,16 +9,20 @@ const PostPreview = ({ post, editable }) => {
   return (
     <Card className="mb-2">
       <Card.Body>
-        <Card.Title>
-          <NavLink as={NavLinkRouter} to={`posts/${post._id}`} className="px-0">
+        <div className="d-flex justify-content-between align-items-baseline">
+          <NavLink
+            as={NavLinkRouter}
+            to={`posts/${post._id}`}
+            className="px-0"
+            style={{ fontSize: "1.4em" }}
+          >
             {post.title}
           </NavLink>
-          {editable && <i className="fas fa-edit"></i>}
-        </Card.Title>
+          <BadgesList tags={post.tags} />
+        </div>
         <p>{post.plainStringBody.slice(0, 100)}...</p>
         <Card.Subtitle className="d-flex justify-content-between">
           <div>By {post.author.nickName}</div>
-          <BadgesList tags={post.tags} />
         </Card.Subtitle>
         <p className="text-muted">
           Posted: {new Date(post.createdAt).toDateString()}

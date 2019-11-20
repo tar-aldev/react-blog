@@ -23,7 +23,7 @@ function App() {
     <Layout>
       <Router>
         <Navbar />
-        <div style={{ margin: "0 2% 0 16%", width: "calc(100vw - 18%)" }}>
+        <div style={{ margin: "0 4% 0 16%", width: "calc(100vw - 18%)" }}>
           <AppRouter />
         </div>
       </Router>

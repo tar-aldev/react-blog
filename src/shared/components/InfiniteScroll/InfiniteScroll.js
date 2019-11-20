@@ -25,7 +25,7 @@ const InfiniteScroll = ({ children, fetchMoreData }) => {
   return (
     <div
       ref={scrollContainerRef}
-      style={{ height: "90vh", overflowY: "scroll" }}
+      style={{ height: "88vh", overflowY: "scroll" }}
       onScroll={handleScroll}
     >
       {children}

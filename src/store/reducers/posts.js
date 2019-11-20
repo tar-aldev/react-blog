@@ -7,6 +7,7 @@ import {
 
 const initialState = {
   posts: [],
+  total: 0,
   post: null,
   tags: [],
   isLoading: false,
@@ -16,9 +17,11 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case GET_POSTS_SUCCESS:
+      const { payload } = action;
       return {
         ...state,
-        posts: action.payload.posts,
+        posts: [...state.posts, ...payload.posts],
+        total: payload.total,
         isLoading: false,
       };
     case GET_POST_ASYNC:

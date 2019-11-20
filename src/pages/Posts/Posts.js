@@ -9,11 +9,13 @@ import InfiniteScroll from "shared/components/InfiniteScroll/InfiniteScroll";
 
 const Posts = () => {
   const dispatch = useDispatch();
-  const { posts, isLoading, error } = useSelector(state => state.postsReducer);
+  const { posts, total, isLoading, error } = useSelector(
+    state => state.postsReducer
+  );
   const [filterStr, setFilterStr] = useState("");
 
   useEffect(() => {
-    dispatch(getPosts({ offset: 0, limit: 6 }));
+    dispatch(getPosts({ skip: 0, limit: 5 }));
   }, []);
 
   const onFilterChange = e => {
@@ -21,8 +23,10 @@ const Posts = () => {
   };
 
   const onFetchMorePosts = () => {
-    console.log("fetch more posts");
-    dispatch(getPosts({ offset: posts.length, limit: 6 }));
+    if (posts.length < total) {
+      console.log("fetch more posts", "posts.length", posts.length);
+      dispatch(getPosts({ skip: posts.length, limit: 6 }));
+    }
   };
 
   if (!isLoading) {
@@ -40,6 +44,7 @@ const Posts = () => {
             onChange={onFilterChange}
           />
         </InputGroup>
+        <div className="d-flex">Total postsAmount: {total}</div>
         <InfiniteScroll fetchMoreData={onFetchMorePosts}>
           {posts.map(post => (
             <PostPreview key={post._id} post={post} />

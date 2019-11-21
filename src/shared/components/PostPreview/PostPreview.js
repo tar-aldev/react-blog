@@ -1,11 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Card } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import NavLink from "react-bootstrap/NavLink";
 import { NavLink as NavLinkRouter } from "react-router-dom";
 import { BadgesList } from "shared/components/BadgesList/BadgesList";
+import clsx from "clsx";
+import classes from "./PostPreview.module.scss";
 
-const PostPreview = ({ post, editable }) => {
+const PostPreview = ({ post, editable, onEditPost }) => {
+  const handleEditPost = () => {
+    onEditPost(post._id);
+  };
+
   return (
     <Card className="mb-2">
       <Card.Body>
@@ -20,13 +26,23 @@ const PostPreview = ({ post, editable }) => {
           </NavLink>
           <BadgesList tags={post.tags} />
         </div>
-        <p>{post.plainStringBody.slice(0, 100)}...</p>
+        <p>{post.plainStringBody.slice(0, 200)}...</p>
         <Card.Subtitle className="d-flex justify-content-between">
-          <div>By {post.author.nickName}</div>
+          <div>
+            <span className="font-weight-light">By</span> {post.author.nickName}
+          </div>
         </Card.Subtitle>
         <p className="text-muted">
           Posted: {new Date(post.createdAt).toDateString()}
         </p>
+        <div className="d-flex justify-content-end">
+          {editable && (
+            <i
+              className={clsx("fas fa-edit", classes.editIcon)}
+              onClick={handleEditPost}
+            ></i>
+          )}
+        </div>
       </Card.Body>
     </Card>
   );

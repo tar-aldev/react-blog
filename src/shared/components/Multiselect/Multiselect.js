@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, memo } from "react";
 
 import classes from "./Multiselect.module.scss";
 import clsx from "clsx";
@@ -8,7 +8,6 @@ const Multiselect = ({ options, selectedOptions, setSelectedOptions }) => {
   const [selectOpened, setSelectOpened] = useState(false);
   const component = useRef({});
 
-  console.log("selectedOptions", selectedOptions);
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
@@ -42,6 +41,8 @@ const Multiselect = ({ options, selectedOptions, setSelectedOptions }) => {
     const updated = selectedOptions.filter(option => option._id !== _id);
     setSelectedOptions(updated);
   };
+
+  console.log("RERENDER MULTISELECT");
 
   return (
     <div
@@ -90,4 +91,4 @@ const Multiselect = ({ options, selectedOptions, setSelectedOptions }) => {
 
 Multiselect.propTypes = {};
 
-export default React.memo(Multiselect);
+export default memo(Multiselect);

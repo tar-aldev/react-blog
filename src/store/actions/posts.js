@@ -43,10 +43,10 @@ export const getPostsError = payload => {
   };
 };
 
-export const getPost = id => {
+export const getPost = payload => {
   return {
     type: GET_POST_ASYNC,
-    payload: id,
+    payload,
   };
 };
 

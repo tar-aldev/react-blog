@@ -26,7 +26,7 @@ const Navbar = () => {
 
       {token && (
         <>
-          <CustomNavLink to="/add-post">
+          <CustomNavLink to="/post-editor" exact>
             Add post <i className="fas fa-plus"></i>
           </CustomNavLink>
         </>

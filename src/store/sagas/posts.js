@@ -14,20 +14,9 @@ import { getValueFromJson } from "utilities/richEditor";
 
 /* paylaod contains offset and limit properties */
 function* getPostsAsync({ payload }) {
-  let queryParamsString = "";
-  for (let key in payload) {
-    if (queryParamsString.length === 0) {
-      queryParamsString = queryParamsString.concat(`?${key}=${payload[key]}`);
-    } else {
-      queryParamsString = queryParamsString.concat(`&${key}=${payload[key]}`);
-    }
-  }
-
+  console.log("payload", payload);
   try {
-    const { data } = yield call(
-      apiService.getData,
-      `posts${queryParamsString}`
-    );
+    const { data } = yield call(apiService.getData, `posts`, payload, "tags");
     yield put(getPostsSuccess(data));
   } catch (error) {}
 }
@@ -38,7 +27,7 @@ function* watchGetPostsAsync() {
 
 function* getPostAsync({ payload }) {
   try {
-    const { data } = yield call(apiService.getData, `posts/${payload}`);
+    const { data } = yield call(apiService.getData, `posts/${payload.id}`);
 
     yield put(
       getPostSuccess({

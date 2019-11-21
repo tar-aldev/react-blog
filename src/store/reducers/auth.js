@@ -7,6 +7,7 @@ import {
 
 const initialState = {
   token: null,
+  currentUserId: null,
   error: null,
   isLoading: false,
 };
@@ -14,9 +15,12 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case AUTH_SUCCESS:
+      console.log("auth success!");
+      const { token, currentUserId } = action.payload;
       return {
         ...state,
-        token: action.payload.token,
+        token,
+        currentUserId,
         error: null,
         isLoading: false,
       };

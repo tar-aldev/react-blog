@@ -10,7 +10,7 @@ import { Comment } from "shared/components/Comment/Comment";
 import { AddComment } from "shared/components/AddComment/AddComment";
 import { BadgesList } from "shared/components/BadgesList/BadgesList";
 import { Editor } from "slate-react";
-import plugins from "pages/AddPost/plugins";
+import plugins from "pages/PostEditor/plugins";
 
 export const Post = () => {
   const { postId } = useParams();
@@ -25,8 +25,8 @@ export const Post = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getPost(postId));
-    dispatch(getPostComments(postId));
+    dispatch(getPost({ id: postId }));
+    dispatch(getPostComments({ post: postId }));
   }, []);
 
   const handleAddComment = ({ comment, resetForm }) => {
@@ -34,7 +34,6 @@ export const Post = () => {
       addPostComment({ comment: { ...comment, post: postId }, resetForm })
     );
   };
-
   return (
     <section className="py-2">
       <div className="mb-4">

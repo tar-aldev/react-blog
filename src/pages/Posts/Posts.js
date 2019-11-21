@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getPosts, clearPostsData } from "store/actions/posts";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useHistory } from "react-router-dom";
 import PostPreview from "shared/components/PostPreview/PostPreview";
 import { InputGroup, FormControl } from "react-bootstrap";
 import PostsFiltersPanel from "./PostsFiltersPanel/PostsFiltersPanel";
@@ -10,17 +10,26 @@ import ArticlesSearch from "./ArticlesSearch/ArticlesSearch";
 
 const Posts = () => {
   const dispatch = useDispatch();
+  const [filters, setFilters] = useState({
+    date: "desc",
+    mostRatedFirst: true,
+    tags: [],
+  });
   const { posts, total, isLoading, error } = useSelector(
     state => state.postsReducer
   );
+  const { currentUserId } = useSelector(state => state.authReducer);
   const [searchStr, setSearchStr] = useState("");
   const [searchBy, setSearchBy] = useState("title");
+  const history = useHistory();
 
   useEffect(() => {
+    let queryParams = { ...filters };
     dispatch(clearPostsData());
-    searchStr.length === 0
-      ? fetchPosts(0)
-      : fetchPosts(0, { searchStr, searchBy });
+    if (searchStr.length > 0) {
+      queryParams = { ...queryParams, searchStr, searchBy };
+    }
+    fetchPosts(0, queryParams);
   }, [searchStr.length]);
 
   const onSearchChange = e => {
@@ -41,6 +50,17 @@ const Posts = () => {
     }
   };
 
+  const onApplyFilters = filters => {
+    console.log("filters", filters);
+    setFilters(filters);
+    dispatch(clearPostsData());
+    fetchPosts(0, { ...filters, searchStr, searchBy });
+  };
+
+  const onEditPost = postId => {
+    history.push(`post-editor/${postId}`);
+  };
+
   return (
     <div>
       <div className="p-2">
@@ -57,12 +77,20 @@ const Posts = () => {
             isLoading={isLoading}
           >
             {posts.map(post => (
-              <PostPreview key={post._id} post={post} />
+              <PostPreview
+                key={post._id}
+                post={post}
+                editable={currentUserId === post.author._id}
+                onEditPost={onEditPost}
+              />
             ))}
           </InfiniteScroll>
         }
       </div>
-      <PostsFiltersPanel />
+      <PostsFiltersPanel
+        initialValues={filters}
+        onApplyFilters={onApplyFilters}
+      />
     </div>
   );
 };

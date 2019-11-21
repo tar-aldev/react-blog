@@ -9,7 +9,7 @@ import {
 
 function* getPostCommentsAsync({ payload }) {
   try {
-    const { data } = yield call(apiService.getData, `comments?post=${payload}`);
+    const { data } = yield call(apiService.getData, `comments`, payload);
     console.log("data", data);
     yield put(getPostCommentsSuccess(data.comments));
   } catch (error) {

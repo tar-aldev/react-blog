@@ -7,12 +7,29 @@ import {
   authSuccess,
   authError,
 } from "store/actions/auth";
+import { putItemSingle } from "utilities/localStorage";
+import jwtDecode from "jwt-decode";
+
+/* Parses token and puts it to localstorage */
+export function* autoLogin({ payload: token }) {
+  try {
+    const decodedToken = jwtDecode(token);
+    const currentUserId = decodedToken._id;
+    yield call(putItemSingle, "token", token);
+    yield put(authSuccess({ token, currentUserId }));
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
+export function* watchAutoLogin() {
+  yield takeEvery("AUTO_LOGIN", autoLogin);
+}
 
 function* signUpAsync({ payload: { credentials, redirect } }) {
-  console.log("sign up saga", credentials, redirect);
   try {
     const { data } = yield call(apiService.post, "users", credentials);
-    yield put(authSuccess(data));
+    yield put({ type: "AUTO_LOGIN", payload: data.token });
     yield redirect("/posts");
   } catch (error) {
     console.log("ERRR", error);
@@ -27,7 +44,7 @@ function* watchSignUpAsync() {
 function* signInAsync({ payload: { credentials, redirect } }) {
   try {
     const { data } = yield call(apiService.post, "auth/signin", credentials);
-    yield put(authSuccess(data));
+    yield put({ type: "AUTO_LOGIN", payload: data.token });
     yield redirect("/posts");
   } catch (error) {
     console.log("ERRR", error);
@@ -42,7 +59,7 @@ function* watchSignInAsync() {
 function* signInAsyncGoogle({ payload: { code, redirect } }) {
   try {
     const { data } = yield call(apiService.post, "auth/signin-google", code);
-    yield put(authSuccess(data));
+    yield put({ type: "AUTO_LOGIN", payload: data.token });
     yield redirect("/posts");
   } catch (error) {
     yield redirect("/login");
@@ -55,5 +72,10 @@ function* watchSignInAsyncGoogle() {
 }
 
 export default function* authSagas() {
-  yield all([watchSignInAsync(), watchSignInAsyncGoogle(), watchSignUpAsync()]);
+  yield all([
+    watchSignInAsync(),
+    watchSignInAsyncGoogle(),
+    watchSignUpAsync(),
+    watchAutoLogin(),
+  ]);
 }

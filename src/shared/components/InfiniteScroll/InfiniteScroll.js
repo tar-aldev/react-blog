@@ -20,7 +20,6 @@ const InfiniteScroll = ({ children, fetchMoreData, isLoading }) => {
     fetchMoreData();
   };
 
-  console.log("isLoading", isLoading);
   return (
     <div style={{ height: "88vh" }}>
       <div

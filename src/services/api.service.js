@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from "qs";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8000/api",
@@ -16,8 +17,13 @@ axiosInstance.interceptors.request.use(config => {
   return config;
 });
 class AxiosService {
-  getData = url => {
-    return axiosInstance.get(url);
+  getData = (url, params) => {
+    return axiosInstance.get(url, {
+      params,
+      paramsSerializer: params => {
+        return qs.stringify(params);
+      },
+    });
   };
   post = (url, data) => {
     return axiosInstance.post(url, data);

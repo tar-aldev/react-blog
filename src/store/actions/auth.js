@@ -28,7 +28,6 @@ export const signInWithGoogle = payload => {
 };
 
 export const authSuccess = payload => {
-  putItemSingle("token", payload.token);
   return {
     type: AUTH_SUCCESS,
     payload,

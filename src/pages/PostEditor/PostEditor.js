@@ -1,20 +1,20 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { Button, Card, Form } from "react-bootstrap";
 import { Editor } from "slate-react";
 import Plain from "slate-plain-serializer";
 import { EditorControls } from "./EditorControls/EditorControls";
 import plugins from "./plugins";
-import { addPost, getTags } from "store/actions/posts";
+import { addPost, getTags, getPost } from "store/actions/posts";
 import Multiselect from "shared/components/Multiselect/Multiselect";
-import classes from "./AddPost.module.scss";
+import classes from "./PostEditor.module.scss";
 import clsx from "clsx";
 
-export const AddPost = () => {
+const PostEditor = () => {
   const [editorValue, setEditorValue] = useState(Plain.deserialize(""));
   const [selectedTags, setSelectedTags] = useState([]);
   const [title, setTitle] = useState("");
-
   const dispatch = useDispatch();
   const { tags } = useSelector(state => state.postsReducer);
   const editorRef = useRef({});
@@ -105,3 +105,5 @@ export const AddPost = () => {
     </div>
   );
 };
+
+export default PostEditor;

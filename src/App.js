@@ -6,6 +6,7 @@ import AppRouter from "./AppRouter";
 import Navbar from "shared/components/Navbar/Navbar";
 import { authSuccess } from "store/actions/auth";
 import classes from "./App.module.scss";
+import { signInSuccess, autoLogin } from "store/sagas/auth";
 
 function useAutoLogin() {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ function useAutoLogin() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      dispatch(authSuccess({ token }));
+      dispatch({ type: "AUTO_LOGIN", payload: token });
     }
   }, []);
 }

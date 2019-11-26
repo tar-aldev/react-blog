@@ -67,7 +67,12 @@ function* updatePostAsync({ payload }) {
       payload.post
     );
     payload.postUpdated(true);
-    yield put(updatePostSuccess(data));
+    yield put(
+      updatePostSuccess({
+        ...data.post,
+        slateValue: getValueFromJson(data.post.encodedBody),
+      })
+    );
   } catch (error) {
     console.log("ERRORRRRRRRRRRRRRRRRRRRRRR");
     payload.callback({ success: false });

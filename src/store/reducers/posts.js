@@ -5,6 +5,7 @@ import {
   GET_TAGS_SUCCESS,
   GET_POSTS_ASYNC,
   CLEAR_POSTS_DATA,
+  UPDATE_POST_SUCCESS,
 } from "store/actions/posts";
 
 const initialState = {
@@ -48,6 +49,12 @@ export default (state = initialState, action) => {
         isLoading: false,
       };
 
+    case UPDATE_POST_SUCCESS:
+      const updatedPost = action.payload
+      return {
+        ...state,
+        post: updatedPost
+      }
     case GET_TAGS_SUCCESS:
       return {
         ...state,

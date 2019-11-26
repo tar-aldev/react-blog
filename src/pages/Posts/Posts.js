@@ -58,7 +58,7 @@ const Posts = () => {
   };
 
   const onEditPost = postId => {
-    history.push(`post-editor/${postId}`);
+    history.push(`edit-post/${postId}`);
   };
 
   return (

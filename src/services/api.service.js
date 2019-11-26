@@ -28,6 +28,10 @@ class AxiosService {
   post = (url, data) => {
     return axiosInstance.post(url, data);
   };
+  put = (url, data) => {
+    console.log({ url, data });
+    return axiosInstance.put(url, data);
+  };
 }
 
 export default new AxiosService();

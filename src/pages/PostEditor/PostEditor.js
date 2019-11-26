@@ -8,13 +8,17 @@ import { EditorControls } from "./EditorControls/EditorControls";
 import plugins from "./plugins";
 import { addPost, getTags, getPost } from "store/actions/posts";
 import Multiselect from "shared/components/Multiselect/Multiselect";
+import Serializer from "slate-plain-serializer";
 import classes from "./PostEditor.module.scss";
+
 import clsx from "clsx";
 
-const PostEditor = () => {
-  const [editorValue, setEditorValue] = useState(Plain.deserialize(""));
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [title, setTitle] = useState("");
+const PostEditor = props => {
+  const [editorValue, setEditorValue] = useState(
+    props.postContent || Serializer.deserialize("")
+  );
+  const [selectedTags, setSelectedTags] = useState(props.postTags || []);
+  const [title, setTitle] = useState(props.postTitle || "");
   const dispatch = useDispatch();
   const { tags } = useSelector(state => state.postsReducer);
   const editorRef = useRef({});
@@ -34,12 +38,15 @@ const PostEditor = () => {
     setEditorValue(value);
   };
 
-  const onPublishPost = () => {
+  const handlePublishPost = () => {
     const encodedBody = JSON.stringify(editorValue.toJSON()); // value in format for Slate editor
     const plainStringBody = Plain.serialize(editorValue); // value in common string format (so can be searched in db)
-    dispatch(
-      addPost({ encodedBody, plainStringBody, title, tags: selectedTags })
-    );
+    props.onPublishPost({
+      encodedBody,
+      plainStringBody,
+      title,
+      tags: selectedTags.map(tag => ({ _id: tag._id })),
+    });
   };
 
   const onTitleChange = e => {
@@ -56,7 +63,7 @@ const PostEditor = () => {
 
   return (
     <div className="py-2">
-      <h5>Write your own post</h5>
+      <h5>{props.editorTitle || `Write your own post`}</h5>
       <Form>
         <Form.Group controlId="formBasicEmail" className="bg-secondary mb-2">
           <Form.Control
@@ -96,10 +103,10 @@ const PostEditor = () => {
       <div className="d-flex justify-content-end">
         <Button
           disabled={!canSubmit}
-          onClick={onPublishPost}
+          onClick={handlePublishPost}
           variant="outline-light"
         >
-          Publish article
+          {props.submitButtonTitle || `Publish article`}
         </Button>
       </div>
     </div>

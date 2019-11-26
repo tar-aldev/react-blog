@@ -10,6 +10,10 @@ export const ADD_POST_ASYNC = "[Posts] Add Post async";
 export const ADD_POST_SUCCESS = "[Posts] Add Post async success";
 export const ADD_POST_ERROR = "[Posts] Add Post async error";
 
+export const UPDATE_POST_ASYNC = "[Posts] Update Post async";
+export const UPDATE_POST_SUCCESS = "[Posts] Update Post success";
+export const UPDATE_POST_ERROR = "[Posts] Update Post error";
+
 export const GET_TAGS_ASYNC = "[Posts] Get tags async";
 export const GET_TAGS_SUCCESS = "[Posts] Get tags success";
 export const GET_TAGS_ERROR = "[Posts] Get tags error";
@@ -102,6 +106,27 @@ export const getTagsSuccess = payload => {
 export const getTagsError = payload => {
   return {
     type: GET_TAGS_ERROR,
+    payload,
+  };
+};
+
+export const updatePost = payload => {
+  return {
+    type: UPDATE_POST_ASYNC,
+    payload,
+  };
+};
+
+export const updatePostSuccess = payload => {
+  return {
+    type: UPDATE_POST_SUCCESS,
+    payload,
+  };
+};
+
+export const updatePostError = payload => {
+  return {
+    type: UPDATE_POST_ERROR,
     payload,
   };
 };

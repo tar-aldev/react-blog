@@ -7,6 +7,7 @@ import Signup from "pages/Signup/Signup";
 import { Post } from "pages/Post/Post";
 import PostEditor from "pages/PostEditor/PostEditor";
 import EditPost from "pages/EditPost/EditPost";
+import AddPost from "pages/AddPost/AddPost";
 
 const AppRouter = () => {
   const { pathname } = useLocation();
@@ -21,11 +22,11 @@ const AppRouter = () => {
       <Route path="/posts">
         <Posts />
       </Route>
-      <Route path="/post-editor/:postId">
+      <Route path="/edit-post/:postId">
         <EditPost />
       </Route>
-      <Route path="/post-editor">
-        <PostEditor />
+      <Route path="/add-post">
+        <AddPost />
       </Route>
       <Route path="/users">
         <Users />

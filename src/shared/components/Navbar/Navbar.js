@@ -8,7 +8,7 @@ import classes from "./Navbar.module.scss";
 import { logout } from "store/actions/auth";
 
 const Navbar = () => {
-  const { token } = useSelector(state => state.authReducer);
+  const { currentUserId } = useSelector(state => state.authReducer);
   const history = useHistory();
   const dispatch = useDispatch();
   const onLogout = () => {
@@ -24,7 +24,7 @@ const Navbar = () => {
     >
       <CustomNavLink to="/posts">Posts</CustomNavLink>
 
-      {token && (
+      {currentUserId && (
         <>
           <CustomNavLink to="/add-post" exact>
             Add post <i className="fas fa-plus"></i>
@@ -33,7 +33,7 @@ const Navbar = () => {
       )}
       <div className={classes.divider} />
 
-      {token ? (
+      {currentUserId ? (
         <p className={classes.logoutButton} onClick={onLogout}>
           Logout
         </p>

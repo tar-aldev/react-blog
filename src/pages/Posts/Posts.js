@@ -13,6 +13,7 @@ const Posts = () => {
   const [filters, setFilters] = useState({
     date: "desc",
     mostRatedFirst: true,
+    postedByMe: false,
     tags: [],
   });
   const { posts, total, isLoading, error } = useSelector(
@@ -40,13 +41,14 @@ const Posts = () => {
     setSearchBy(e.target.value);
   };
 
-  const fetchPosts = (skip = posts.length, additionalQueryParams) => {
+  const fetchPosts = (skip, additionalQueryParams) => {
+    console.log("fetchPosts", { skip, ...additionalQueryParams });
     dispatch(getPosts({ skip, limit: 6, ...additionalQueryParams }));
   };
 
   const onFetchMorePosts = () => {
     if (posts.length < total) {
-      fetchPosts();
+      fetchPosts(posts.length, { ...filters, searchStr, searchBy });
     }
   };
 
@@ -90,6 +92,7 @@ const Posts = () => {
       <PostsFiltersPanel
         initialValues={filters}
         onApplyFilters={onApplyFilters}
+        authenticated={!!currentUserId}
       />
     </div>
   );

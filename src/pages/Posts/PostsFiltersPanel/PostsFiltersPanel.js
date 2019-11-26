@@ -8,7 +8,11 @@ import { useFormik } from "formik";
 import Multiselect from "shared/components/Multiselect/Multiselect";
 import { getTags } from "store/actions/posts";
 
-const PostsFiltersPanel = ({ initialValues, onApplyFilters }) => {
+const PostsFiltersPanel = ({
+  initialValues,
+  onApplyFilters,
+  authenticated,
+}) => {
   const dispatch = useDispatch();
   const { tags } = useSelector(state => state.postsReducer);
 
@@ -52,6 +56,17 @@ const PostsFiltersPanel = ({ initialValues, onApplyFilters }) => {
             {...formik.getFieldProps("mostRatedFirst")}
           />
         </Form.Group>
+        {authenticated && (
+          <Form.Group>
+            <Form.Check
+              size="sm"
+              name="postedByMe"
+              type="checkbox"
+              label="Posted by me"
+              {...formik.getFieldProps("postedByMe")}
+            />
+          </Form.Group>
+        )}
         <Form.Group>
           <Form.Label>With tags:</Form.Label>
           <Multiselect

@@ -6,7 +6,6 @@ import {
 } from "store/actions/auth";
 
 const initialState = {
-  token: null,
   currentUserId: null,
   error: null,
   isLoading: false,
@@ -43,6 +42,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         token: null,
+        currentUserId: null,
       };
     default:
       return state;

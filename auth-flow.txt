@@ -8,7 +8,7 @@ saveTokens() {
   dispatch(authSuccess())?
 }
 
-1. ON APP LOAD / PAGE REFRESH
+1. ON APP LOAD / PAGE REFRESH +
 getItemFromLS("accessToken")
 getItemFromLS("refreshToken")
 Have accessToken && refreshToken? 
@@ -27,7 +27,7 @@ decodeAccessToken()                       Go to signin page
 saveTokens()
 
 ------------
-2. ON SIGN IN +++
+2. ON SIGN IN +
 send credentials
 response success?
 

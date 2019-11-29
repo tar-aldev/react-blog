@@ -75,7 +75,7 @@ function* updatePostAsync({ payload }) {
     );
   } catch (error) {
     console.log("ERRORRRRRRRRRRRRRRRRRRRRRR");
-    payload.callback({ success: false });
+    payload.postUpdated(false);
   }
 }
 

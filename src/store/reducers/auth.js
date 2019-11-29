@@ -12,7 +12,7 @@ const getUserId = () => {
   if (!accessToken) {
     return null;
   }
-  return decodeToken(accessToken).currentUserId;
+  return decodeToken(accessToken)._id;
 };
 
 const initialState = {

@@ -7,23 +7,27 @@ import {
   authSuccess,
   authError,
 } from "store/actions/auth";
-import { putItemSingle } from "utilities/localStorage";
-import jwtDecode from "jwt-decode";
+import { saveItemLocalStorage } from "utilities/localStorage";
+import authService from "services/auth.service";
+import { decodeToken } from "utilities/auth";
 
 /* Parses token and puts it to localstorage */
-export function* autoLogin({ payload: token }) {
+export function* decodeAndSaveTokens({
+  payload: { accessToken, refreshToken },
+}) {
   try {
-    const decodedToken = jwtDecode(token);
+    const decodedToken = decodeToken(accessToken);
     const currentUserId = decodedToken._id;
-    yield call(putItemSingle, "token", token);
-    yield put(authSuccess({ token, currentUserId }));
+    saveItemLocalStorage("accessToken", accessToken);
+    saveItemLocalStorage("refreshToken", refreshToken);
+    yield put(authSuccess({ currentUserId, accessToken, refreshToken }));
   } catch (error) {
     console.log("error", error);
   }
 }
 
-export function* watchAutoLogin() {
-  yield takeEvery("AUTO_LOGIN", autoLogin);
+export function* watchDecodeAndSaveTokens() {
+  yield takeEvery("DECODE_AND_SAVE_TOKENS", decodeAndSaveTokens);
 }
 
 function* signUpAsync({ payload: { credentials, redirect } }) {
@@ -43,8 +47,13 @@ function* watchSignUpAsync() {
 
 function* signInAsync({ payload: { credentials, redirect } }) {
   try {
-    const { data } = yield call(apiService.post, "auth/signin", credentials);
-    yield put({ type: "AUTO_LOGIN", payload: data.token });
+    const {
+      data: { accessToken, refreshToken },
+    } = yield call(authService.signIn, credentials);
+    yield put({
+      type: "DECODE_AND_SAVE_TOKENS",
+      payload: { accessToken, refreshToken },
+    });
     yield redirect("/posts");
   } catch (error) {
     console.log("ERRR", error);
@@ -76,6 +85,6 @@ export default function* authSagas() {
     watchSignInAsync(),
     watchSignInAsyncGoogle(),
     watchSignUpAsync(),
-    watchAutoLogin(),
+    watchDecodeAndSaveTokens(),
   ]);
 }

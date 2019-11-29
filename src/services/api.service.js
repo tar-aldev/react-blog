@@ -1,22 +1,34 @@
 import axios from "axios";
 import qs from "qs";
+import { loadItemLocalStorage } from "utilities/localStorage";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8000/api",
 });
 
 axiosInstance.interceptors.request.use(config => {
-  const token = localStorage.getItem("token");
+  const accessToken = loadItemLocalStorage("accessToken");
 
-  if (token) {
+  if (accessToken) {
     return {
       ...config,
-      headers: { ...config.headers, Authorization: `Bearer ${token}` },
+      headers: { ...config.headers, Authorization: `Bearer ${accessToken}` },
     };
   }
   return config;
 });
-class AxiosService {
+
+/* axiosInstance.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    console.log("error", error.response);
+  }
+); */
+
+export class AxiosService {
+  axios = axiosInstance;
   getData = (url, params) => {
     return axiosInstance.get(url, {
       params,

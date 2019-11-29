@@ -1,26 +1,42 @@
-import React, { useEffect } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "shared/components/Layout/Layout";
 import AppRouter from "./AppRouter";
 import Navbar from "shared/components/Navbar/Navbar";
-import { authSuccess } from "store/actions/auth";
+import { authSuccess, authError } from "store/actions/auth";
 import classes from "./App.module.scss";
 import { signInSuccess, autoLogin } from "store/sagas/auth";
+import { loadItemLocalStorage } from "utilities/localStorage";
+import axiosService from "services/api.service";
 
-function useAutoLogin() {
+/* import axiosService from "services/api.service"; */
+
+/* console.log("axiosService", axiosService); */
+
+/* function useInitOnLoad() {
   const dispatch = useDispatch();
 
+  axiosService.axios.interceptors.response.use(
+    response => {
+      return response;
+    },
+    error => {
+      if (error.response.status === 401) {
+        dispatch(authError(error.response));
+      }
+    }
+  );
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      dispatch({ type: "AUTO_LOGIN", payload: token });
+    const acessToken = loadItemLocalStorage("acessToken");
+    if (acessToken) {
+      dispatch({ type: "DECODE_AND_SAVE", payload: { acessToken } });
     }
   }, []);
-}
+} */
 
 function App() {
-  useAutoLogin();
   return (
     <Layout>
       <Router>

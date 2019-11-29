@@ -4,9 +4,21 @@ import {
   AUTH_SUCCESS,
   LOGOUT,
 } from "store/actions/auth";
+import { loadItemLocalStorage } from "utilities/localStorage";
+import { decodeToken } from "utilities/auth";
+
+const getUserId = () => {
+  const accessToken = loadItemLocalStorage("accessToken");
+  if (!accessToken) {
+    return null;
+  }
+  return decodeToken(accessToken).currentUserId;
+};
 
 const initialState = {
-  currentUserId: null,
+  accessToken: loadItemLocalStorage("accessToken"),
+  refreshToken: loadItemLocalStorage("refreshToken"),
+  currentUserId: getUserId(),
   error: null,
   isLoading: false,
 };
@@ -14,12 +26,10 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case AUTH_SUCCESS:
-      console.log("auth success!");
-      const { token, currentUserId } = action.payload;
+      console.log("auth success", action.payload);
       return {
         ...state,
-        token,
-        currentUserId,
+        ...action.payload,
         error: null,
         isLoading: false,
       };

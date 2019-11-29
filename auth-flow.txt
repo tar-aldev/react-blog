@@ -1,0 +1,51 @@
+getItemFromLS()
+saveItemToLS()
+decodeAccessToken()
+authService.refreshToken()
+
+saveTokens() {
+  saveItemToLS()
+  dispatch(authSuccess())?
+}
+
+1. ON APP LOAD / PAGE REFRESH
+getItemFromLS("accessToken")
+getItemFromLS("refreshToken")
+Have accessToken && refreshToken? 
+
+YES                                       NO
+decodeAccessToken()                       Go to signin page
+accessToken expired?
+
+YES                                       NO
+authService.refreshToken()                put decoded accessToken and refreshToken to store
+API response success?
+
+
+YES                                       NO
+decodeAccessToken()                       Go to signin page
+saveTokens()
+
+------------
+2. ON SIGN IN +++
+send credentials
+response success?
+
+
+YES                                        NO
+decodeAccessToken()                        Show errors
+saveTokens()
+redirect to posts page
+
+-----------------
+3. 401 error from server during request
+error === token expired?
+
+YES                                         NO
+get refreshToken from store                 pass error down
+authService.refreshToken()
+API response success?
+
+YES                                         NO
+decodeAccessToken()                         Go to signin page
+saveTokens()

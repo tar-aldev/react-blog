@@ -4,13 +4,13 @@ import { NavLink } from "react-router-dom";
 
 import classes from "./CustomNavLink.module.scss";
 
-const CustomNavLink = props => {
-  const { to, children } = props;
+const CustomNavLink = ({ to, children, exact, ...rest }) => {
   return (
-    <Nav.Item {...props}>
+    <Nav.Item {...rest}>
       <Nav.Link
         as={NavLink}
         to={to}
+        exact={exact}
         className={classes.link}
         activeClassName={classes.active}
       >

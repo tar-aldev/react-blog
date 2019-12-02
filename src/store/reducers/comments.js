@@ -1,6 +1,7 @@
 import {
   GET_POST_COMMENTS_ASYNC,
   GET_POST_COMMENTS_SUCCESS,
+  ADD_POST_COMMENT_SUCCESS,
 } from "store/actions/comments";
 
 const initialState = {
@@ -16,6 +17,12 @@ export default (state = initialState, action) => {
 
     case GET_POST_COMMENTS_SUCCESS:
       return { ...state, comments: action.payload };
+
+    case ADD_POST_COMMENT_SUCCESS:
+      return {
+        ...state,
+        comments: [action.payload, ...state.comments],
+      };
     default:
       return state;
   }

@@ -6,9 +6,30 @@ export const GET_POST_ASYNC = "[Posts] Get Post async";
 export const GET_POST_SUCCESS = "[Posts] Get Post success";
 export const GET_POST_ERROR = "[Posts] Get Post error";
 
-export const getPosts = () => {
+export const ADD_POST_ASYNC = "[Posts] Add Post async";
+export const ADD_POST_SUCCESS = "[Posts] Add Post async success";
+export const ADD_POST_ERROR = "[Posts] Add Post async error";
+
+export const UPDATE_POST_ASYNC = "[Posts] Update Post async";
+export const UPDATE_POST_SUCCESS = "[Posts] Update Post success";
+export const UPDATE_POST_ERROR = "[Posts] Update Post error";
+
+export const GET_TAGS_ASYNC = "[Posts] Get tags async";
+export const GET_TAGS_SUCCESS = "[Posts] Get tags success";
+export const GET_TAGS_ERROR = "[Posts] Get tags error";
+
+export const CLEAR_POSTS_DATA = "[Posts] Clear posts data";
+
+export const clearPostsData = () => {
+  return {
+    type: CLEAR_POSTS_DATA,
+  };
+};
+
+export const getPosts = payload => {
   return {
     type: GET_POSTS_ASYNC,
+    payload,
   };
 };
 
@@ -26,10 +47,10 @@ export const getPostsError = payload => {
   };
 };
 
-export const getPost = id => {
+export const getPost = payload => {
   return {
     type: GET_POST_ASYNC,
-    payload: id,
+    payload,
   };
 };
 
@@ -43,6 +64,69 @@ export const getPostSuccess = payload => {
 export const getPostError = payload => {
   return {
     type: GET_POST_ERROR,
+    payload,
+  };
+};
+
+export const addPost = payload => {
+  return {
+    type: ADD_POST_ASYNC,
+    payload,
+  };
+};
+
+export const addPostSuccess = payload => {
+  return {
+    type: ADD_POST_SUCCESS,
+    payload,
+  };
+};
+
+export const addPostError = payload => {
+  return {
+    type: ADD_POST_ERROR,
+    payload,
+  };
+};
+
+export const getTags = payload => {
+  return {
+    type: GET_TAGS_ASYNC,
+    payload,
+  };
+};
+
+export const getTagsSuccess = payload => {
+  return {
+    type: GET_TAGS_SUCCESS,
+    payload,
+  };
+};
+
+export const getTagsError = payload => {
+  return {
+    type: GET_TAGS_ERROR,
+    payload,
+  };
+};
+
+export const updatePost = payload => {
+  return {
+    type: UPDATE_POST_ASYNC,
+    payload,
+  };
+};
+
+export const updatePostSuccess = payload => {
+  return {
+    type: UPDATE_POST_SUCCESS,
+    payload,
+  };
+};
+
+export const updatePostError = payload => {
+  return {
+    type: UPDATE_POST_ERROR,
     payload,
   };
 };

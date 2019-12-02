@@ -1,12 +1,10 @@
-@import 'src/utilities/__variables';
+@import 'src/utilities/styling/main';
 
-.editor {
-  height: 100%;
+.editorWrapper {
   font-size: 16px;
-  /* border: 1px solid $info; */
   color: $white;
+  padding: $inputPadding;
 }
-
 
 .headingSelect {
   width: 100px;

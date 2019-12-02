@@ -7,6 +7,13 @@ import { all } from "redux-saga/effects";
 import authReducer from "store/reducers/auth";
 import postsReducer from "store/reducers/posts";
 import commentsReducer from "store/reducers/comments";
+import {
+  saveTokenLocalStorage,
+  saveItemLocalStorage,
+} from "utilities/localStorage";
+import { AUTH_ERROR } from "./actions/auth";
+
+import axiosService from "services/api.service";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -20,7 +27,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   combinedReducers,
-  composeEnhancers(applyMiddleware(sagaMiddleware))
+  composeEnhancers(applyMiddleware(/* logger,  */ sagaMiddleware))
 );
 
 function* rootSaga() {

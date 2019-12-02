@@ -5,10 +5,12 @@ import posts from "store/reducers/posts";
 import { getPost } from "store/actions/posts";
 import useLoader from "hooks/useLoader";
 import { Card, Badge } from "react-bootstrap";
-import { getPostComments } from "store/actions/comments";
+import { getPostComments, addPostComment } from "store/actions/comments";
 import { Comment } from "shared/components/Comment/Comment";
 import { AddComment } from "shared/components/AddComment/AddComment";
 import { BadgesList } from "shared/components/BadgesList/BadgesList";
+import { Editor } from "slate-react";
+import plugins from "pages/PostEditor/plugins";
 
 export const Post = () => {
   const { postId } = useParams();
@@ -23,16 +25,17 @@ export const Post = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getPost(postId));
-    dispatch(getPostComments(postId));
+    dispatch(getPost({ id: postId }));
+    dispatch(getPostComments({ post: postId }));
   }, []);
 
-  const handleAddComment = comment => {
-    console.log("comment", comment);
+  const handleAddComment = ({ comment, resetForm }) => {
+    dispatch(
+      addPostComment({ comment: { ...comment, post: postId }, resetForm })
+    );
   };
-
   return (
-    <div>
+    <section className="py-2">
       <div className="mb-4">
         {post && (
           <Card>
@@ -42,7 +45,13 @@ export const Post = () => {
                 <div>By {post.author.nickName}</div>
                 <BadgesList tags={post.tags} />
               </Card.Subtitle>
-              <p>{post.body}</p>
+              <Editor
+                readOnly
+                value={post.slateValue}
+                spellCheck={false}
+                style={{ padding: "12px", flexGrow: 1 }}
+                plugins={plugins}
+              />
               <p className="text-muted text-right">
                 Posted: {new Date(post.createdAt).toDateString()}
               </p>
@@ -58,6 +67,6 @@ export const Post = () => {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };

@@ -1,7 +1,8 @@
-@import 'src/utilities/__variables';
+@import 'src/utilities/styling/main';
 
 .controls {
   display: flex;
+  padding: 4px;
 }
 
 .controlBtn {
@@ -20,7 +21,7 @@
 
 .customSelectWrapper {
   position: relative;
-  min-width: 100px;
+  width: 50px;
 }
 
 .selectMenu {
@@ -29,6 +30,6 @@
   flex-direction: column;
   z-index: 4;
   width: 100%;
-  background: rgba(255, 255, 255, 0.1);
+  background: #5c5e5d;
   box-shadow: 0 0 2px;
 }

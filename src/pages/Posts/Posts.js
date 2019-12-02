@@ -1,47 +1,101 @@
-import React, { useEffect } from "react";
-import { getPosts } from "store/actions/posts";
+import React, { useEffect, useState } from "react";
+import { getPosts, clearPostsData } from "store/actions/posts";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Badge } from "react-bootstrap";
-import { NavLink as NavLinkRouter } from "react-router-dom";
-import useLoader from "hooks/useLoader";
-import NavLink from "react-bootstrap/NavLink";
-import { BadgesList } from "shared/components/BadgesList/BadgesList";
+import { useHistory } from "react-router-dom";
+import PostPreview from "shared/components/PostPreview/PostPreview";
+import { InputGroup, FormControl } from "react-bootstrap";
+import PostsFiltersPanel from "./PostsFiltersPanel/PostsFiltersPanel";
+import InfiniteScroll from "shared/components/InfiniteScroll/InfiniteScroll";
+import ArticlesSearch from "./ArticlesSearch/ArticlesSearch";
 
 const Posts = () => {
   const dispatch = useDispatch();
-  const postsState = useSelector(state => state.postsReducer);
+  const [filters, setFilters] = useState({
+    date: "desc",
+    mostRatedFirst: true,
+    postedByMe: false,
+    tags: [],
+  });
+  const { posts, total, isLoading, error } = useSelector(
+    state => state.postsReducer
+  );
+  const { currentUserId } = useSelector(state => state.authReducer);
+  const [searchStr, setSearchStr] = useState("");
+  const [searchBy, setSearchBy] = useState("title");
+  const history = useHistory();
 
   useEffect(() => {
-    dispatch(getPosts());
-  }, []);
-  return useLoader(() => {
-    return (
+    let queryParams = { ...filters };
+    dispatch(clearPostsData());
+    if (searchStr.length > 0) {
+      queryParams = { ...queryParams, searchStr, searchBy };
+    }
+    fetchPosts(0, queryParams);
+  }, [searchStr.length]);
+
+  const onSearchChange = e => {
+    setSearchStr(e.target.value);
+  };
+
+  const onSearchByChange = e => {
+    setSearchBy(e.target.value);
+  };
+
+  const fetchPosts = (skip, additionalQueryParams) => {
+    console.log("fetchPosts", { skip, ...additionalQueryParams });
+    dispatch(getPosts({ skip, limit: 6, ...additionalQueryParams }));
+  };
+
+  const onFetchMorePosts = () => {
+    if (posts.length < total) {
+      fetchPosts(posts.length, { ...filters, searchStr, searchBy });
+    }
+  };
+
+  const onApplyFilters = filters => {
+    console.log("filters", filters);
+    setFilters(filters);
+    dispatch(clearPostsData());
+    fetchPosts(0, { ...filters, searchStr, searchBy });
+  };
+
+  const onEditPost = postId => {
+    history.push(`edit-post/${postId}`);
+  };
+
+  return (
+    <div>
       <div className="p-2">
-        {postsState.posts.map((post, index) => (
-          <Card key={index} className="mb-2">
-            <Card.Body>
-              <Card.Title>
-                <NavLink
-                  as={NavLinkRouter}
-                  to={`posts/${post._id}`}
-                  className="px-0"
-                >
-                  {post.title}
-                </NavLink>
-              </Card.Title>
-              <Card.Subtitle className="d-flex justify-content-between">
-                <div>By {post.author.nickName}</div>
-                <BadgesList tags={post.tags} />
-              </Card.Subtitle>
-              <p className="text-muted">
-                Posted: {new Date(post.createdAt).toDateString()}
-              </p>
-            </Card.Body>
-          </Card>
-        ))}
+        <ArticlesSearch
+          searchStr={searchStr}
+          onSearchChange={onSearchChange}
+          searchBy={searchBy}
+          onSearchByChange={onSearchByChange}
+        />
+        <p className="text-primary">Total Posts Amount: {total}</p>
+        {
+          <InfiniteScroll
+            fetchMoreData={onFetchMorePosts}
+            isLoading={isLoading}
+          >
+            {posts.map(post => (
+              <PostPreview
+                key={post._id}
+                post={post}
+                editable={currentUserId === post.author._id}
+                onEditPost={onEditPost}
+              />
+            ))}
+          </InfiniteScroll>
+        }
       </div>
-    );
-  }, postsState);
+      <PostsFiltersPanel
+        initialValues={filters}
+        onApplyFilters={onApplyFilters}
+        authenticated={!!currentUserId}
+      />
+    </div>
+  );
 };
 
 export default Posts;

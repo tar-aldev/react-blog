@@ -1,0 +1,23 @@
+.skeleton {
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(-90deg, rgba(248, 248, 248, 0.301) 0%, rgba(248, 248, 248, 0.945) 50%, rgba(248, 248, 248, 0.301) 100%);
+  background-size: 400% 400%;
+  animation: pulse 1.6s ease-out infinite;
+  border-radius: 20px;
+
+  &::before {
+    content: "\00a0";
+  }
+
+  @keyframes pulse {
+    0% {
+      background-position: 0% 0%;
+    }
+
+    100% {
+      background-position: -135% 0%;
+    }
+  }
+}

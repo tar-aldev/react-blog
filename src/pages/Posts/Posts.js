@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { getPosts, clearPostsData } from "store/actions/posts";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import PostPreview from "shared/components/PostPreview/PostPreview";
-import { InputGroup, FormControl } from "react-bootstrap";
-import PostsFiltersPanel from "./PostsFiltersPanel/PostsFiltersPanel";
 import InfiniteScroll from "shared/components/InfiniteScroll/InfiniteScroll";
+import PostPreview from "shared/components/PostPreview/PostPreview";
+import { clearPostsData, getPosts } from "store/actions/posts";
 import ArticlesSearch from "./ArticlesSearch/ArticlesSearch";
+import LoadingPostSkeleton from "./LoadingPostSkeleton";
+import PostsFiltersPanel from "./PostsFiltersPanel/PostsFiltersPanel";
+
+const fakeArray = Array.from(new Array(6)).map((_, idx) => idx);
 
 const Posts = () => {
   const dispatch = useDispatch();
@@ -74,18 +76,17 @@ const Posts = () => {
         />
         <p className="text-primary">Total Posts Amount: {total}</p>
         {
-          <InfiniteScroll
-            fetchMoreData={onFetchMorePosts}
-            isLoading={isLoading}
-          >
-            {posts.map(post => (
-              <PostPreview
-                key={post._id}
-                post={post}
-                editable={currentUserId === post.author._id}
-                onEditPost={onEditPost}
-              />
-            ))}
+          <InfiniteScroll fetchMoreData={onFetchMorePosts} isLoading={false}>
+            {isLoading
+              ? fakeArray.map((_, idx) => <LoadingPostSkeleton key={idx} />)
+              : posts.map(post => (
+                  <PostPreview
+                    key={post._id}
+                    post={post}
+                    editable={currentUserId === post.author._id}
+                    onEditPost={onEditPost}
+                  />
+                ))}
           </InfiniteScroll>
         }
       </div>
@@ -99,3 +100,8 @@ const Posts = () => {
 };
 
 export default Posts;
+
+/* 
+
+
+*/

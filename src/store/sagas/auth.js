@@ -6,6 +6,8 @@ import {
   SIGN_UP_ASYNC,
   authSuccess,
   authError,
+  GET_CURRENT_USER_ASYNC,
+  getCurrentUserSuccess,
 } from "store/actions/auth";
 import { saveItemLocalStorage } from "utilities/localStorage";
 import authService from "services/auth.service";

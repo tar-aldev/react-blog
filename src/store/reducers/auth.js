@@ -3,6 +3,8 @@ import {
   SIGN_UP_SUCCESS,
   AUTH_SUCCESS,
   LOGOUT,
+  GET_CURRENT_USER_ASYNC,
+  GET_CURRENT_USER_SUCCESS,
 } from "store/actions/auth";
 import { loadItemLocalStorage } from "utilities/localStorage";
 import { decodeToken } from "utilities/auth";
@@ -16,6 +18,7 @@ const getUserId = () => {
 };
 
 const initialState = {
+  currentUser: null,
   accessToken: loadItemLocalStorage("accessToken"),
   refreshToken: loadItemLocalStorage("refreshToken"),
   currentUserId: getUserId(),

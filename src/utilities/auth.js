@@ -2,7 +2,6 @@ import jwt_decode from "jwt-decode";
 import moment from "moment";
 
 export const decodeToken = token => {
-  console.log("token", token);
   try {
     return jwt_decode(token);
   } catch (error) {

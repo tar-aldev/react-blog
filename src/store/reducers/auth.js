@@ -26,7 +26,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case AUTH_SUCCESS:
-      console.log("auth success", action.payload);
       return {
         ...state,
         ...action.payload,

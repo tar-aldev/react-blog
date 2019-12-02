@@ -67,7 +67,7 @@ const useTokenRefresh = (history, dispatch) => {
         redirectToLogin();
       }
     }
-  }, [dispatch, history]);
+  }, []);
 };
 
 export default useTokenRefresh;

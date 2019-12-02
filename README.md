@@ -5,6 +5,7 @@
 - Setting up google auth for client
 - Trying css modules
 - Trying react-bootstrap + bootswatch theme
+- Refresh token using axios interceptors
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

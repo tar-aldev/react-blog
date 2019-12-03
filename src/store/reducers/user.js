@@ -1,6 +1,7 @@
 import {
   GET_CURRENT_USER_ASYNC,
   GET_CURRENT_USER_SUCCESS,
+  UPDATE_USER_PROFILE_SUCCESS,
 } from "store/actions/user";
 
 const initialState = {
@@ -17,6 +18,11 @@ export default (state = initialState, { type, payload }) => {
       };
 
     case GET_CURRENT_USER_SUCCESS:
+      return {
+        ...state,
+        currentUser: payload,
+      };
+    case UPDATE_USER_PROFILE_SUCCESS:
       return {
         ...state,
         currentUser: payload,

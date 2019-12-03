@@ -17,6 +17,8 @@ export const Post = () => {
   const { post, isLoading: postLoading, error: postError } = useSelector(
     state => state.postsReducer
   );
+  const { currentUserId } = useSelector(state => state.authReducer);
+
   const {
     comments,
     isLoading: commentsLoading,
@@ -59,14 +61,16 @@ export const Post = () => {
           </Card>
         )}
       </div>
-      <div className="d-flex flex-column align-items-center">
-        <AddComment onAddComment={handleAddComment} />
-        <div className="w-50">
-          {comments.map(comment => (
-            <Comment key={comment._id} comment={comment} />
-          ))}
+      {currentUserId && (
+        <div className="d-flex flex-column align-items-center">
+          <AddComment onAddComment={handleAddComment} />
+          <div className="w-50">
+            {comments.map(comment => (
+              <Comment key={comment._id} comment={comment} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

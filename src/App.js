@@ -1,32 +1,26 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
 import Layout from "shared/components/Layout/Layout";
 import Navbar from "shared/components/Navbar/Navbar";
 import classes from "./App.module.scss";
 import AppRouter from "./AppRouter";
 import addTokenRefresher from "utilities/addTokenRefresher";
 
+import { history } from "index";
+
+import { Router } from "react-router-dom";
+
 function App() {
-  const [triedLogin, setTriedLogin] = useState(false);
-  const history = useHistory();
-  const dispatch = useDispatch();
-
-  /* 
-    Otherwise get inifinite loop 
-    redirect will render the app => addTokenRefresher() => redirect ...
-  */
-  if (!triedLogin) {
-    addTokenRefresher(history, dispatch, setTriedLogin);
-  }
-
+  addTokenRefresher();
   return (
-    <Layout>
-      <Navbar />
-      <div className={classes.contentContainer}>
-        <AppRouter />
-      </div>
-    </Layout>
+    <Router history={history}>
+      <Layout>
+        <Navbar />
+        <div className={classes.contentContainer}>
+          <AppRouter />
+        </div>
+      </Layout>
+    </Router>
   );
 }
 

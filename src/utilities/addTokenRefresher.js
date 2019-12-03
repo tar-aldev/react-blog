@@ -12,8 +12,18 @@ import {
   removeItemLocalStorage,
 } from "utilities/localStorage";
 import { checkTokenExpired, decodeToken } from "utilities/auth";
+let redirected = false;
 
-const addTokenRefresher = (history, dispatch) => {
+const addTokenRefresher = (history, dispatch, setTriedLogin) => {
+  let accessToken = loadItemLocalStorage("accessToken");
+  let refreshToken = loadItemLocalStorage("refreshToken");
+
+  if (!accessToken || !refreshToken) {
+    console.log("LOGOUT");
+    redirectToLogin();
+  }
+
+  console.log("AFTER LOGOUT");
   axiosService.axios.interceptors.response.use(
     /* pass success response down the chain */
     response => {
@@ -38,15 +48,8 @@ const addTokenRefresher = (history, dispatch) => {
       }); */
     }
   );
-
-  let accessToken = loadItemLocalStorage("accessToken");
-  let refreshToken = loadItemLocalStorage("refreshToken");
-
-  if (!accessToken || !refreshToken) {
-    return redirectToLogin();
-  }
-
   function redirectToLogin() {
+    setTriedLogin(true);
     history.push("/login");
   }
 

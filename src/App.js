@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Layout from "shared/components/Layout/Layout";
@@ -8,9 +8,18 @@ import AppRouter from "./AppRouter";
 import addTokenRefresher from "utilities/addTokenRefresher";
 
 function App() {
+  const [triedLogin, setTriedLogin] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
-  addTokenRefresher(history, dispatch);
+
+  /* 
+    Otherwise get inifinite loop 
+    redirect will render the app => addTokenRefresher() => redirect ...
+  */
+  if (!triedLogin) {
+    addTokenRefresher(history, dispatch, setTriedLogin);
+  }
+
   return (
     <Layout>
       <Navbar />

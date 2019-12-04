@@ -1,5 +1,3 @@
-import { putItemSingle } from "utilities/localStorage";
-
 export const SIGN_IN_WITH_CREDENTIALS_ASYNC = "[Auth] Sign in with credentials";
 export const SIGN_IN_WITH_GOOGLE_ASYNC = "[Auth] Sign in with google";
 export const SIGN_IN_WITH_FACEBOOK_ASYNC = "[Auth] Sign in with facebook";

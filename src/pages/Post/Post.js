@@ -1,11 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import posts from "store/reducers/posts";
 import { getPost } from "store/actions/posts";
 import useLoader from "hooks/useLoader";
 import { Card, Badge } from "react-bootstrap";
-import { getPostComments, addPostComment } from "store/actions/comments";
+import {
+  getPostComments,
+  addPostComment,
+  updatePostComment,
+  deletePostComment,
+} from "store/actions/comments";
 import { Comment } from "shared/components/Comment/Comment";
 import { AddComment } from "shared/components/AddComment/AddComment";
 import { BadgesList } from "shared/components/BadgesList/BadgesList";
@@ -17,6 +22,9 @@ export const Post = () => {
   const { post, isLoading: postLoading, error: postError } = useSelector(
     state => state.postsReducer
   );
+  const { currentUserId } = useSelector(state => state.authReducer);
+  const [commentsUnderEdit, setCommentsUnderEdit] = useState([]);
+
   const {
     comments,
     isLoading: commentsLoading,
@@ -34,6 +42,34 @@ export const Post = () => {
       addPostComment({ comment: { ...comment, post: postId }, resetForm })
     );
   };
+
+  const handleEditComment = ({ comment, _id }) => {
+    const callback = success => {
+      if (success) {
+        const updatedCommentsUnderEdit = commentsUnderEdit.filter(
+          id => id !== _id
+        );
+        setCommentsUnderEdit(updatedCommentsUnderEdit);
+      }
+    };
+    dispatch(updatePostComment({ comment, _id, callback }));
+  };
+
+  const handleDeleteComment = id => {
+    dispatch(deletePostComment({ id }));
+  };
+
+  const toggleEditMode = comment => {
+    setCommentsUnderEdit([...commentsUnderEdit, comment._id]);
+  };
+
+  const handleCancelEdit = commentId => {
+    const updatedCommentsUnderEdit = commentsUnderEdit.filter(
+      id => id !== commentId
+    );
+    setCommentsUnderEdit(updatedCommentsUnderEdit);
+  };
+
   return (
     <section className="py-2">
       <div className="mb-4">
@@ -59,14 +95,37 @@ export const Post = () => {
           </Card>
         )}
       </div>
-      <div className="d-flex flex-column align-items-center">
-        <AddComment onAddComment={handleAddComment} />
-        <div className="w-50">
-          {comments.map(comment => (
-            <Comment key={comment._id} comment={comment} />
-          ))}
+      {currentUserId && (
+        <div className="d-flex flex-column align-items-center">
+          <AddComment onAddComment={handleAddComment} className="w-50 mb-2" />
+          <div className="w-50">
+            {comments.map(comment => {
+              if (commentsUnderEdit.includes(comment._id)) {
+                console.log("fasfk;asfasf;'asf");
+                return (
+                  <AddComment
+                    key={comment._id}
+                    onAddComment={handleAddComment}
+                    onEditComment={handleEditComment}
+                    onCancelEditing={handleCancelEdit}
+                    initialValues={comment}
+                  />
+                );
+              }
+              return (
+                <Comment
+                  key={comment._id}
+                  comment={comment}
+                  editable={currentUserId === comment.author._id}
+                  onEditComment={toggleEditMode}
+                  authorized={currentUserId === comment.author._id}
+                  onDeleteComment={handleDeleteComment}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

@@ -17,8 +17,8 @@ axiosInstance.interceptors.request.use(config => {
   }
   return config;
 });
-
-/* axiosInstance.interceptors.response.use(
+/* 
+axiosInstance.interceptors.response.use(
   response => {
     return response;
   },
@@ -40,9 +40,12 @@ export class AxiosService {
   post = (url, data) => {
     return axiosInstance.post(url, data);
   };
-  put = (url, data) => {
+  put = (url, data, params) => {
     console.log({ url, data });
     return axiosInstance.put(url, data);
+  };
+  delete = url => {
+    return axiosInstance.delete(url);
   };
 }
 

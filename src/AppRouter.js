@@ -7,10 +7,14 @@ import Signup from "pages/Signup/Signup";
 import { Post } from "pages/Post/Post";
 import EditPost from "pages/EditPost/EditPost";
 import AddPost from "pages/AddPost/AddPost";
+import Profile from "pages/Profile/Profile";
 
 const AppRouter = () => {
   return (
     <Switch>
+      <Route path="/profile">
+        <Profile />
+      </Route>
       <Route path="/posts/:postId">
         <Post />
       </Route>

@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import CustomNavLink from "shared/components/CustomNavLink/CustomNavLink";
-import { Nav } from "react-bootstrap";
 import clsx from "clsx";
-import classes from "./Navbar.module.scss";
+import React from "react";
+import { Nav } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import CustomNavLink from "shared/components/CustomNavLink/CustomNavLink";
 import { logout } from "store/actions/auth";
+import classes from "./Navbar.module.scss";
 
 const Navbar = () => {
   const { currentUserId } = useSelector(state => state.authReducer);
   const history = useHistory();
   const dispatch = useDispatch();
   const onLogout = () => {
-    localStorage.removeItem("token");
     dispatch(logout());
-    history.push("/posts");
   };
 
   return (
@@ -22,6 +20,7 @@ const Navbar = () => {
       defaultActiveKey="/home"
       className={clsx(["flex-column bg-secondary py-2", classes.root])}
     >
+      {currentUserId && <CustomNavLink to="/profile">Profile</CustomNavLink>}
       <CustomNavLink to="/posts">Posts</CustomNavLink>
 
       {currentUserId && (

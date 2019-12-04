@@ -39,6 +39,7 @@ const addTokenRefresher = () => {
           redirectToLogin();
         });
       }
+
       if (error.response.status === 401 && accessToken && refreshToken) {
         const failedRequestConfig = error.config;
         return tryRefreshToken(failedRequestConfig);

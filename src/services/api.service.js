@@ -44,6 +44,9 @@ export class AxiosService {
     console.log({ url, data });
     return axiosInstance.put(url, data);
   };
+  patch = (url, data) => {
+    return axiosInstance.patch(url, data);
+  };
   delete = url => {
     return axiosInstance.delete(url);
   };

@@ -9,6 +9,7 @@ import {
   getPostComments,
   addPostComment,
   updatePostComment,
+  deletePostComment,
 } from "store/actions/comments";
 import { Comment } from "shared/components/Comment/Comment";
 import { AddComment } from "shared/components/AddComment/AddComment";
@@ -52,6 +53,10 @@ export const Post = () => {
       }
     };
     dispatch(updatePostComment({ comment, _id, callback }));
+  };
+
+  const handleDeleteComment = id => {
+    dispatch(deletePostComment({ id }));
   };
 
   const toggleEditMode = comment => {
@@ -113,6 +118,8 @@ export const Post = () => {
                   comment={comment}
                   editable={currentUserId === comment.author._id}
                   onEditComment={toggleEditMode}
+                  authorized={currentUserId === comment.author._id}
+                  onDeleteComment={handleDeleteComment}
                 />
               );
             })}

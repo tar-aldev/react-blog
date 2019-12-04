@@ -11,6 +11,10 @@ export const UPDATE_POST_COMMENT_ASYNC = "[Comments] Update comment async";
 export const UPDATE_POST_COMMENT_ERROR = "[Comments] Update comment success";
 export const UPDATE_POST_COMMENT_SUCCESS = "[Comments] Update comment error";
 
+export const DELETE_POST_COMMENT_ASYNC = "[Comments] Delete comment async";
+export const DELETE_POST_COMMENT_SUCCESS = "[Comments] Delete comment success";
+export const DELETE_POST_COMMENT_ERROR = "[Comments] Delete comment error";
+
 export const getPostComments = postId => {
   return {
     type: GET_POST_COMMENTS_ASYNC,
@@ -70,6 +74,27 @@ export const updatePostCommentSuccess = payload => {
 export const updatePostCommentError = payload => {
   return {
     type: UPDATE_POST_COMMENT_ERROR,
+    payload,
+  };
+};
+
+export const deletePostComment = payload => {
+  return {
+    type: DELETE_POST_COMMENT_ASYNC,
+    payload,
+  };
+};
+
+export const deletePostCommentSuccess = payload => {
+  return {
+    type: DELETE_POST_COMMENT_SUCCESS,
+    payload,
+  };
+};
+
+export const deletePostCommentError = payload => {
+  return {
+    type: DELETE_POST_COMMENT_ERROR,
     payload,
   };
 };

@@ -39,13 +39,13 @@ const addTokenRefresher = () => {
           redirectToLogin();
         });
       }
-      if (error.response.status === 401) {
+      if (error.response.status === 401 && accessToken && refreshToken) {
         const failedRequestConfig = error.config;
         return tryRefreshToken(failedRequestConfig);
       }
-      /* return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         reject(error);
-      }); */
+      });
     }
   );
   function redirectToLogin() {

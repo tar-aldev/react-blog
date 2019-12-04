@@ -8,6 +8,7 @@ import {
   authError,
   GET_CURRENT_USER_ASYNC,
   getCurrentUserSuccess,
+  LOGOUT,
 } from "store/actions/auth";
 import { saveItemLocalStorage } from "utilities/localStorage";
 import authService from "services/auth.service";
@@ -58,7 +59,7 @@ function* signInAsync({ payload: { credentials, redirect } }) {
     });
     yield redirect("/posts");
   } catch (error) {
-    console.log("ERRR", error);
+    console.log("ERRR", error.response);
     yield put(authError(error.response.data.message));
   }
 }
@@ -82,11 +83,24 @@ function* watchSignInAsyncGoogle() {
   yield takeEvery(SIGN_IN_WITH_GOOGLE_ASYNC, signInAsyncGoogle);
 }
 
+function* signOut(/* { payload: { redirect } } */) {
+  try {
+    // const { data } = yield call(apiService.post, "auth/signin-google",);
+    yield localStorage.removeItem("accessToken");
+    yield localStorage.removeItem("refreshToken");
+  } catch (error) {}
+}
+
+function* watchSignOut() {
+  yield takeEvery(LOGOUT, signOut);
+}
+
 export default function* authSagas() {
   yield all([
     watchSignInAsync(),
     watchSignInAsyncGoogle(),
     watchSignUpAsync(),
     watchDecodeAndSaveTokens(),
+    watchSignOut(),
   ]);
 }

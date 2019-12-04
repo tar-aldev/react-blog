@@ -4,6 +4,7 @@ import {
   ADD_POST_COMMENT_SUCCESS,
   UPDATE_POST_COMMENT_ASYNC,
   UPDATE_POST_COMMENT_SUCCESS,
+  DELETE_POST_COMMENT_SUCCESS,
 } from "store/actions/comments";
 
 const initialState = {
@@ -33,6 +34,11 @@ export default (state = initialState, { type, payload }) => {
         comments: state.comments.map(comment =>
           comment._id === payload._id ? payload : comment
         ),
+      };
+    case DELETE_POST_COMMENT_SUCCESS:
+      return {
+        ...state,
+        comments: state.comments.filter(comment => comment._id !== payload),
       };
     default:
       return state;

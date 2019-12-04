@@ -12,9 +12,7 @@ const Navbar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const onLogout = () => {
-    localStorage.removeItem("token");
     dispatch(logout());
-    history.push("/posts");
   };
 
   return (

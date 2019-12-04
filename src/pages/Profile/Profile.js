@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoaderIndicator from "shared/components/InfiniteScroll/LoaderIndicator";
 import { getCurrentUser, updateUserProfile } from "store/actions/user";
 import EditProfile from "./EditProfile.js/EditProfile";
+import PropTypes from "prop-types";
 
 const Profile = props => {
   const dispatch = useDispatch();

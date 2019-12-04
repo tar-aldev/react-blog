@@ -7,6 +7,7 @@ import {
 } from "store/actions/user";
 import apiService from "services/api.service";
 import { updatePostSuccess } from "store/actions/posts";
+import apiService from "services/api.service";
 
 export function* getCurrentUserAsync() {
   try {

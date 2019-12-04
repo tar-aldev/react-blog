@@ -12,12 +12,22 @@ import {
   removeItemLocalStorage,
 } from "utilities/localStorage";
 import { checkTokenExpired, decodeToken } from "utilities/auth";
+import { history } from "index";
+import store from "store";
+const { dispatch } = store;
 
-const addTokenRefresher = (history, dispatch) => {
+const addTokenRefresher = () => {
+  console.log("history", history);
+  let accessToken = loadItemLocalStorage("accessToken");
+  let refreshToken = loadItemLocalStorage("refreshToken");
+
+  if (!accessToken || !refreshToken) {
+    redirectToLogin();
+  }
+
   axiosService.axios.interceptors.response.use(
     /* pass success response down the chain */
     response => {
-      console.log("INTERCEPTOR", response);
       return response;
     },
     error => {
@@ -29,23 +39,16 @@ const addTokenRefresher = (history, dispatch) => {
           redirectToLogin();
         });
       }
-      if (error.response.status === 401) {
+
+      if (error.response.status === 401 && accessToken && refreshToken) {
         const failedRequestConfig = error.config;
         return tryRefreshToken(failedRequestConfig);
       }
-      /* return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         reject(error);
-      }); */
+      });
     }
   );
-
-  let accessToken = loadItemLocalStorage("accessToken");
-  let refreshToken = loadItemLocalStorage("refreshToken");
-
-  if (!accessToken || !refreshToken) {
-    return redirectToLogin();
-  }
-
   function redirectToLogin() {
     history.push("/login");
   }

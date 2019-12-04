@@ -22,11 +22,13 @@ export default (state = initialState, { type, payload }) => {
         ...state,
         currentUser: payload,
       };
+
     case UPDATE_USER_PROFILE_SUCCESS:
       return {
         ...state,
         currentUser: payload,
       };
+
     default:
       return state;
   }

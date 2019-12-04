@@ -6,6 +6,7 @@ import { NavLink as NavLinkRouter } from "react-router-dom";
 import { BadgesList } from "shared/components/BadgesList/BadgesList";
 import clsx from "clsx";
 import classes from "./PostPreview.module.scss";
+import EditIcon from "../EditIcon/EditIcon";
 
 const PostPreview = ({ post, editable, onEditPost }) => {
   const handleEditPost = () => {
@@ -36,12 +37,7 @@ const PostPreview = ({ post, editable, onEditPost }) => {
           Posted: {new Date(post.createdAt).toDateString()}
         </p>
         <div className="d-flex justify-content-end">
-          {editable && (
-            <i
-              className={clsx("fas fa-edit", classes.editIcon)}
-              onClick={handleEditPost}
-            ></i>
-          )}
+          {editable && <EditIcon handleClick={handleEditPost} />}
         </div>
       </Card.Body>
     </Card>

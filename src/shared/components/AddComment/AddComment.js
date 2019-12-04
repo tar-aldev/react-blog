@@ -14,18 +14,37 @@ const validationSchema = Yup.object({
     .min(6, "THe comment should be at least 6 characters long"),
 });
 
-export const AddComment = ({ onAddComment, ...rest }) => {
+export const AddComment = ({
+  onAddComment,
+  onEditComment,
+  onCancelEditing,
+  initialValues,
+  ...rest
+}) => {
   const formik = useFormik({
     initialValues: {
-      body: "",
+      body: (initialValues && initialValues.body) || "",
     },
     onSubmit: comment => {
-      onAddComment({ comment, resetForm: formik.resetForm });
+      if (initialValues) {
+        onEditComment({
+          comment,
+          _id: initialValues._id,
+        });
+      } else {
+        onAddComment({ comment, resetForm: formik.resetForm });
+      }
     },
+    enableReinitialize: true,
     validationSchema,
   });
+
+  const handleEditingCancel = () => {
+    onCancelEditing(initialValues._id);
+  };
+
   return (
-    <div className="w-50 mb-4" {...rest}>
+    <div className="mb-4" {...rest}>
       <h6 className="d-flex justify-content-end text-muted text-small">
         What do you think about this?
       </h6>
@@ -52,14 +71,24 @@ export const AddComment = ({ onAddComment, ...rest }) => {
             </Form.Control.Feedback>
           )}
         </Form.Group>
-        <Button
-          variant="outline-light"
-          type="submit"
-          className="float-right"
-          disabled={!formik.isValid || !formik.dirty}
-        >
-          Add comment
-        </Button>
+        <div className="d-flex justify-content-end">
+          {initialValues && (
+            <Button
+              variant="outline-light"
+              onClick={handleEditingCancel}
+              className="mr-1"
+            >
+              Cancel
+            </Button>
+          )}
+          <Button
+            variant="outline-light"
+            type="submit"
+            disabled={!formik.isValid || !formik.dirty}
+          >
+            {initialValues ? `Save changes` : `Add comment`}
+          </Button>
+        </div>
       </Form>
     </div>
   );

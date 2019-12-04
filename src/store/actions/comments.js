@@ -7,6 +7,10 @@ export const ADD_POST_COMMENT_ASYNC = "[Comments] Add Comment async";
 export const ADD_POST_COMMENT_SUCCESS = "[Comments] Add Comment success";
 export const ADD_POST_COMMENT_ERROR = "[Comments] Add Comment error";
 
+export const UPDATE_POST_COMMENT_ASYNC = "[Comments] Update comment async";
+export const UPDATE_POST_COMMENT_ERROR = "[Comments] Update comment success";
+export const UPDATE_POST_COMMENT_SUCCESS = "[Comments] Update comment error";
+
 export const getPostComments = postId => {
   return {
     type: GET_POST_COMMENTS_ASYNC,
@@ -45,6 +49,27 @@ export const addPostCommentSuccess = payload => {
 export const addPostCommentsError = payload => {
   return {
     type: ADD_POST_COMMENT_ERROR,
+    payload,
+  };
+};
+
+export const updatePostComment = payload => {
+  return {
+    type: UPDATE_POST_COMMENT_ASYNC,
+    payload,
+  };
+};
+
+export const updatePostCommentSuccess = payload => {
+  return {
+    type: UPDATE_POST_COMMENT_SUCCESS,
+    payload,
+  };
+};
+
+export const updatePostCommentError = payload => {
+  return {
+    type: UPDATE_POST_COMMENT_ERROR,
     payload,
   };
 };

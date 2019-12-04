@@ -5,6 +5,8 @@ import {
   getPostCommentsSuccess,
   ADD_POST_COMMENT_ASYNC,
   addPostCommentSuccess,
+  UPDATE_POST_COMMENT_ASYNC,
+  updatePostCommentSuccess,
 } from "store/actions/comments";
 
 function* getPostCommentsAsync({ payload }) {
@@ -36,6 +38,28 @@ function* watchAddPostCommentAsync() {
   yield takeEvery(ADD_POST_COMMENT_ASYNC, addPostCommentAsync);
 }
 
+function* updatePostCommentAsync({ payload }) {
+  try {
+    const { data } = yield call(
+      apiService.put,
+      `comments/${payload._id}`,
+      payload.comment
+    );
+    payload.callback(true);
+    yield put(updatePostCommentSuccess(data.comment));
+  } catch (error) {
+    console.log("ERR", error);
+  }
+}
+
+function* watchUpdatePostCommentAsync() {
+  yield takeEvery(UPDATE_POST_COMMENT_ASYNC, updatePostCommentAsync);
+}
+
 export default function* postsSaga() {
-  yield all([watchGetPostCommentsAsync(), watchAddPostCommentAsync()]);
+  yield all([
+    watchGetPostCommentsAsync(),
+    watchAddPostCommentAsync(),
+    watchUpdatePostCommentAsync(),
+  ]);
 }

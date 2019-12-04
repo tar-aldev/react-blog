@@ -5,18 +5,10 @@ import {
   getPostCommentsSuccess,
   ADD_POST_COMMENT_ASYNC,
   addPostCommentSuccess,
-<<<<<<< Updated upstream
-  UPDATE_POST_COMMENT_ASYNC,
-  updatePostCommentSuccess,
-=======
-<<<<<<< Updated upstream
-=======
   UPDATE_POST_COMMENT_ASYNC,
   updatePostCommentSuccess,
   DELETE_POST_COMMENT_ASYNC,
   deletePostCommentSuccess,
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 } from "store/actions/comments";
 
 function* getPostCommentsAsync({ payload }) {
@@ -66,8 +58,6 @@ function* watchUpdatePostCommentAsync() {
   yield takeEvery(UPDATE_POST_COMMENT_ASYNC, updatePostCommentAsync);
 }
 
-<<<<<<< Updated upstream
-=======
 function* deletePostCommentAsync({ payload }) {
   try {
     const { data } = yield call(apiService.delete, `comments/${payload.id}`);
@@ -81,15 +71,11 @@ function* watchDeletePostCommentAsync() {
   yield takeEvery(DELETE_POST_COMMENT_ASYNC, deletePostCommentAsync);
 }
 
->>>>>>> Stashed changes
 export default function* postsSaga() {
   yield all([
     watchGetPostCommentsAsync(),
     watchAddPostCommentAsync(),
     watchUpdatePostCommentAsync(),
-<<<<<<< Updated upstream
-=======
     watchDeletePostCommentAsync(),
->>>>>>> Stashed changes
   ]);
 }

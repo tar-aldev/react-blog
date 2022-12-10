@@ -14,7 +14,7 @@
     "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
     "node-sass": "^4.13.0",
-    "qs": "^6.9.1",
+    "qs": "^6.9.7",
     "query-string": "^6.8.3",
     "react": "^16.11.0",
     "react-bootstrap": "^1.0.0-beta.14",
